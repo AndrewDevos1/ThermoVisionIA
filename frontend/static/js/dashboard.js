@@ -24,6 +24,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const betaTestar = document.getElementById("beta-testar");
     const betaLista = document.getElementById("beta-lista");
     const betaFeedback = document.getElementById("beta-feedback");
+    const betaModelo = document.getElementById("beta-modelo");
+    const betaIntelbrasBloco = document.getElementById("beta-intelbras-bloco");
+    const intelbrasUser = document.getElementById("intelbras-user");
+    const intelbrasPass = document.getElementById("intelbras-pass");
+    const intelbrasIp = document.getElementById("intelbras-ip");
+    const intelbrasPort = document.getElementById("intelbras-port");
+    const intelbrasAuto = document.getElementById("intelbras-auto");
+    const intelbrasMontar = document.getElementById("intelbras-montar");
     let secaoAtual = "dashboard";
 
     let isConnected = false;
@@ -150,13 +158,22 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (availableCameras.length === 0) {
             cameraSelect.innerHTML = '<option value="">Nenhuma câmera encontrada</option>';
-            return;
+        } else {
+            availableCameras.forEach(camera => {
+                const option = document.createElement('option');
+                option.value = camera.index;
+                option.textContent = `${camera.name} (${camera.resolution})`;
+                cameraSelect.appendChild(option);
+            });
         }
 
-        availableCameras.forEach(camera => {
+        // Inclui câmeras customizadas salvas
+        const listaCustom = lerCamerasSalvas();
+        listaCustom.forEach((cam, idx) => {
             const option = document.createElement('option');
-            option.value = camera.index;
-            option.textContent = `${camera.name} (${camera.resolution})`;
+            option.value = `custom-${idx}`;
+            option.textContent = `${cam.nome || "Custom"} (RTSP)`;
+            option.dataset.rtsp = cam.url;
             cameraSelect.appendChild(option);
         });
     }
@@ -258,6 +275,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
+            // Se for opção custom, usa URL; senão, usa índice
+            if (selectedValue.startsWith("custom-")) {
+                const idx = parseInt(selectedValue.replace("custom-", ""), 10);
+                const lista = lerCamerasSalvas();
+                const cam = lista[idx];
+                if (!cam) {
+                    alert("Câmera customizada não encontrada.");
+                    return;
+                }
+                await conectarCameraUrl(cam.url, cam.nome);
+                return;
+            }
+
             selectedCameraIndex = parseInt(selectedValue);
 
             // Conectar câmera
@@ -352,6 +382,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Beta Test - câmeras customizadas
     // ----------------------------
     const LS_KEY_BETA = "thermo_beta_cameras";
+    const INTELBRAS_DEFAULT = {
+        usuario: "admin",
+        senha: "Kaiser@210891",
+        ip: "192.168.88.110",
+        porta: "554",
+    };
 
     function setBetaFeedback(mensagem, tipo = "info") {
         if (!betaFeedback) return;
@@ -495,10 +531,55 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (betaTestar) {
-        betaTestar.addEventListener("click", (e) => {
+            betaTestar.addEventListener("click", (e) => {
+                e.preventDefault();
+                const url = betaUrl.value.trim();
+                testarCameraUrl(url);
+            });
+    }
+
+    function atualizarVisibilidadeModelo() {
+        if (!betaModelo || !betaIntelbrasBloco) return;
+        betaIntelbrasBloco.classList.toggle("hidden", betaModelo.value !== "intelbras");
+    }
+
+    function montarUrlIntelbras() {
+        const user = intelbrasUser.value.trim();
+        const pwd = intelbrasPass.value.trim();
+        const ip = intelbrasIp.value.trim();
+        const port = intelbrasPort.value.trim() || "554";
+        if (!user || !pwd || !ip) {
+            setBetaFeedback("Preencha usuário, senha e IP para montar a URL Intelbras.", "erro");
+            return;
+        }
+        const url = `rtsp://${user}:${pwd}@${ip}:${port}/cam/realmonitor?channel=1&subtype=0`;
+        betaUrl.value = url;
+        if (!betaNome.value.trim()) {
+            betaNome.value = "Intelbras RTSP";
+        }
+        setBetaFeedback("URL Intelbras montada.", "ok");
+    }
+
+    if (betaModelo) {
+        betaModelo.addEventListener("change", atualizarVisibilidadeModelo);
+        atualizarVisibilidadeModelo();
+    }
+
+    if (intelbrasAuto) {
+        intelbrasAuto.addEventListener("click", (e) => {
             e.preventDefault();
-            const url = betaUrl.value.trim();
-            testarCameraUrl(url);
+            intelbrasUser.value = INTELBRAS_DEFAULT.usuario;
+            intelbrasPass.value = INTELBRAS_DEFAULT.senha;
+            intelbrasIp.value = INTELBRAS_DEFAULT.ip;
+            intelbrasPort.value = INTELBRAS_DEFAULT.porta;
+            setBetaFeedback("Campos Intelbras preenchidos.", "info");
+        });
+    }
+
+    if (intelbrasMontar) {
+        intelbrasMontar.addEventListener("click", (e) => {
+            e.preventDefault();
+            montarUrlIntelbras();
         });
     }
 
