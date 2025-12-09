@@ -3,6 +3,9 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     // Elementos do DOM
+    const botaoAbrirMenu = document.getElementById("abrir-menu-mobile");
+    const botaoFecharMenu = document.getElementById("fechar-menu-mobile");
+    const sidebarMobile = document.getElementById("sidebar-mobile");
     const connectButton = document.getElementById("connect-button");
     const cameraStreamImg = document.getElementById("camera-stream");
     const statusDisplay = document.getElementById("status-display");
@@ -11,12 +14,62 @@ document.addEventListener('DOMContentLoaded', function() {
     const cameraSelect = document.getElementById("camera-select");
     const refreshCamerasButton = document.getElementById("refresh-cameras");
     const selectedCameraSpan = document.getElementById("selected-camera");
+    const linksNavegacao = document.querySelectorAll("[data-rota]");
 
     let isConnected = false;
     let availableCameras = [];
     let selectedCameraIndex = 0;
     // URL do feed de vídeo do Flask
     const videoFeedUrl = "/video_feed";
+
+    // Controle da navbar
+    function destacarLinkAtivo() {
+        const caminho = window.location.pathname;
+        const hash = window.location.hash;
+        linksNavegacao.forEach((link) => {
+            const rota = link.dataset.rota || link.getAttribute("href");
+            const ativo = (rota && caminho.startsWith(rota)) || (hash && rota === hash);
+            link.classList.toggle("bg-white/10", ativo);
+            link.classList.toggle("text-white", ativo);
+        });
+    }
+
+    function abrirMenuMobile() {
+        if (sidebarMobile) {
+            sidebarMobile.classList.remove("hidden");
+            sidebarMobile.setAttribute("aria-hidden", "false");
+        }
+    }
+
+    function fecharMenuMobile() {
+        if (sidebarMobile) {
+            sidebarMobile.classList.add("hidden");
+            sidebarMobile.setAttribute("aria-hidden", "true");
+        }
+    }
+
+    if (botaoAbrirMenu) {
+        botaoAbrirMenu.addEventListener("click", abrirMenuMobile);
+    }
+
+    if (botaoFecharMenu) {
+        botaoFecharMenu.addEventListener("click", fecharMenuMobile);
+    }
+
+    if (sidebarMobile) {
+        sidebarMobile.addEventListener("click", (evento) => {
+            if (evento.target === sidebarMobile) {
+                fecharMenuMobile();
+            }
+        });
+    }
+
+    linksNavegacao.forEach((link) => {
+        link.addEventListener("click", () => fecharMenuMobile());
+    });
+
+    destacarLinkAtivo();
+    window.addEventListener("hashchange", destacarLinkAtivo);
 
     // Função para carregar lista de câmeras disponíveis
     async function loadAvailableCameras() {

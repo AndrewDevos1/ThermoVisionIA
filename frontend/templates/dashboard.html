@@ -11,8 +11,6 @@
             @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;800&display=swap");
             body {
                 font-family: "Inter", sans-serif;
-                background-color: #f7f7f7;
-                color: #1f2937;
             }
 
             /* Estilo customizado para os cartões (fundo, borda e sombra) */
@@ -49,201 +47,368 @@
             }
         </style>
     </head>
-    <body class="min-h-screen">
-        <div class="dashboard p-4 md:p-8">
-            <!-- Header / Navigation Bar -->
-            <header
-                class="flex justify-between items-center border-b-2 border-zinc-900 pb-4 mb-8"
+    <body class="min-h-screen bg-gray-50 text-zinc-900">
+        <div class="min-h-screen flex">
+            <!-- Sidebar desktop -->
+            <aside
+                id="sidebar-desktop"
+                class="hidden lg:flex flex-col w-64 bg-slate-900 text-white shadow-xl"
             >
-                <h1 class="text-2xl font-extrabold text-zinc-900">
-                    Thermo Vision
-                </h1>
-                <div class="flex items-center space-x-4">
-                    <span
-                        class="text-lg font-semibold text-zinc-700 hidden sm:block"
-                        >Perfil</span
-                    >
-                    <!-- User Icon Placeholder -->
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        class="icon-svg text-zinc-900"
-                    >
-                        <path
-                            fill-rule="evenodd"
-                            d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
-                            clip-rule="evenodd"
-                        />
-                    </svg>
-                    <!-- Log Out Icon Placeholder -->
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        class="icon-svg text-zinc-900"
-                    >
-                        <path
-                            fill-rule="evenodd"
-                            d="M12 2.25a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM6.11 5.91a.75.75 0 1 0-.58 1.14l2.825 2.55-2.825 2.55a.75.75 0 0 0 .58 1.14l3.193-2.894a.75.75 0 0 0 0-1.14L6.11 5.91ZM16.2 3.25c-5.22 0-9.45 4.23-9.45 9.45s4.23 9.45 9.45 9.45 9.45-4.23 9.45-9.45-4.23-9.45-9.45-9.45Z"
-                            clip-rule="evenodd"
-                        />
-                    </svg>
-                </div>
-            </header>
-
-            <!-- Main Content Grid -->
-            <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Coluna Esquerda: Transmissão da Câmera (Card Maior) -->
-                <div class="lg:col-span-2">
-                    <div class="cartao-principal bg-white p-6 rounded-xl">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center space-x-2">
-                                <!-- Camera Icon Placeholder -->
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    class="icon-svg text-zinc-900"
-                                >
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M1.371 6.837c.725-.625 1.701-.986 2.766-.986h3.693c.961 0 1.84.45 2.404 1.222l.966 1.328c.84.975 2.148 1.487 3.483 1.258a18.09 18.09 0 0 0 .88-6.19c.75.148 1.5.218 2.247.218 1.066 0 2.042-.36 2.766-.986.749-.646 1.218-1.579 1.218-2.585v-1.12c0-1.29-.75-2.482-1.977-3.032l-1.571-.703a.5.5 0 0 0-.317 0l-1.572.703C19.782.788 18.91 0 17.844 0H4.92c-1.066 0-2.042.36-2.766.986C1.371 1.63 0 2.456 0 3.327v1.12c0 1.006.469 1.939 1.218 2.586Zm19.13-3.41c0-.49-.138-.946-.395-1.324-.257-.378-.606-.677-1.018-.887l-.46-.231c-1.144-.575-2.433-.873-3.72-.873h-7.66C8.24 0 6.95 0 5.805.575l-.46.23c-.412.21-.761.509-1.018.887-.257.378-.395.834-.395 1.324v1.12c0 .49.138.946.395 1.324.257.378.606.677 1.018.887l.46.231c1.144.575 2.433.873 3.72.873h7.66c1.287 0 2.576-.298 3.72-.873l.46-.231c.412-.21.761-.509 1.018-.887.257-.378.395-.834.395-1.324v-1.12Zm-1.879 4.316c-.053-.024-.11-.044-.168-.063-.518-.168-1.05-.256-1.585-.256h-2.138c-1.42 0-2.735.61-3.79 1.768l-1.006 1.14c-.66.75-.992 1.637-.962 2.535l-.018 2.518c0 .276.224.5.5.5h14c.276 0 .5-.224.5-.5v-2.518c0-1.06-.48-2.062-1.32-2.775l-.64-1.049c-.58-1.026-1.588-1.61-2.712-1.61h-2.124Z"
-                                        clip-rule="evenodd"
-                                    />
-                                </svg>
-                                <h2 class="text-xl font-bold">
-                                    Transmissão da Câmera
-                                </h2>
-                            </div>
-                            <p
-                                class="text-xs font-light text-gray-500 hidden sm:block"
+                <div class="px-5 py-6 border-b border-white/10">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 rounded-lg bg-white/10">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
                             >
-                                Conecte sua câmera para começar a usar o thermo
-                                vision
-                            </p>
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="1.5"
+                                    d="M3 7.5h18M3 12h18M3 16.5h18"
+                                />
+                            </svg>
                         </div>
+                        <div>
+                            <p class="text-xs uppercase tracking-wide text-white/60">
+                                ThermoVisionIA
+                            </p>
+                            <p class="text-lg font-bold">Painel</p>
+                        </div>
+                    </div>
+                </div>
+                <nav class="flex-1 px-3 py-6 space-y-2">
+                    <a
+                        href="/dashboard"
+                        data-rota="/dashboard"
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="1.5"
+                                d="m3 12 8.485-8.485a.75.75 0 0 1 1.06 0L21 12m-2.25-2.25v8.75a.75.75 0 0 1-.75.75h-4.5v-4.5h-3v4.5H6a.75.75 0 0 1-.75-.75v-8.75"
+                            />
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
+                    <a
+                        href="#video-container"
+                        data-rota="#video-container"
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="1.5"
+                                d="M3.75 5.25h12.5a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1h-12.5a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1Zm17.5 2.5-4 2.3v2.4l4 2.3V7.75Z"
+                            />
+                        </svg>
+                        <span>Streaming</span>
+                    </a>
+                    <a
+                        href="#acoes"
+                        data-rota="#acoes"
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="1.5"
+                                d="M6.75 5.25h10.5m-10.5 13.5h10.5m-10.5-6.75h10.5"
+                            />
+                        </svg>
+                        <span>Ações rápidas</span>
+                    </a>
+                    <a
+                        href="#status"
+                        data-rota="#status"
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="1.5"
+                                d="M9.75 3.75v16.5m-5.5-7.5h15.5"
+                            />
+                        </svg>
+                        <span>Status</span>
+                    </a>
+                </nav>
+                <div class="px-4 py-4 border-t border-white/10 text-white/70 text-sm">
+                    <p class="font-semibold text-white">Modo Demo</p>
+                    <p>Streaming usa vídeo local se configurado.</p>
+                </div>
+            </aside>
 
-                        <!-- Seletor de Câmera -->
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Selecionar Câmera:
-                            </label>
-                            <div class="flex space-x-2">
-                                <select id="camera-select" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="">Carregando câmeras...</option>
-                                </select>
-                                <button id="refresh-cameras" class="btn-acao px-4 py-2 bg-blue-500 text-white hover:bg-blue-600">
-                                    🔄
+            <!-- Sidebar mobile -->
+            <div
+                id="sidebar-mobile"
+                class="fixed inset-0 z-40 bg-black/50 hidden"
+                aria-hidden="true"
+            >
+                <div class="w-72 h-full bg-slate-900 text-white shadow-xl p-4 flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-wide text-white/60">
+                                ThermoVisionIA
+                            </p>
+                            <p class="text-lg font-bold">Painel</p>
+                        </div>
+                        <button
+                            id="fechar-menu-mobile"
+                            class="p-2 rounded-lg bg-white/10 hover:bg-white/20"
+                            aria-label="Fechar menu"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                    <nav class="space-y-2 flex-1">
+                        <a
+                            href="/dashboard"
+                            data-rota="/dashboard"
+                            class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
+                        >
+                            <span class="text-lg">🏠</span>
+                            <span>Dashboard</span>
+                        </a>
+                        <a
+                            href="#video-container"
+                            data-rota="#video-container"
+                            class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
+                        >
+                            <span class="text-lg">🎥</span>
+                            <span>Streaming</span>
+                        </a>
+                        <a
+                            href="#acoes"
+                            data-rota="#acoes"
+                            class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
+                        >
+                            <span class="text-lg">⚡</span>
+                            <span>Ações rápidas</span>
+                        </a>
+                        <a
+                            href="#status"
+                            data-rota="#status"
+                            class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
+                        >
+                            <span class="text-lg">📊</span>
+                            <span>Status</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Conteúdo principal -->
+            <div class="flex-1 flex flex-col">
+                <header class="flex items-center justify-between px-4 md:px-8 py-4 bg-white border-b border-gray-200 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <button
+                            id="abrir-menu-mobile"
+                            class="lg:hidden p-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-100"
+                            aria-label="Abrir menu"
+                        >
+                            ☰
+                        </button>
+                        <div>
+                            <p class="text-xs uppercase tracking-wide text-gray-500">ThermoVisionIA</p>
+                            <h1 class="text-xl font-extrabold">Dashboard</h1>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="hidden sm:inline text-sm text-gray-600">Perfil</span>
+                        <div class="h-10 w-10 rounded-full bg-amber-500 text-zinc-900 font-bold flex items-center justify-center">
+                            TV
+                        </div>
+                    </div>
+                </header>
+
+                <main class="flex-1 p-4 md:p-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Coluna Esquerda: Transmissão da Câmera (Card Maior) -->
+                        <div class="lg:col-span-2">
+                            <div class="cartao-principal bg-white p-6 rounded-xl">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-2">
+                                        <!-- Camera Icon Placeholder -->
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            fill="currentColor"
+                                            class="icon-svg text-zinc-900"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M1.371 6.837c.725-.625 1.701-.986 2.766-.986h3.693c.961 0 1.84.45 2.404 1.222l.966 1.328c.84.975 2.148 1.487 3.483 1.258a18.09 18.09 0 0 0 .88-6.19c.75.148 1.5.218 2.247.218 1.066 0 2.042-.36 2.766-.986.749-.646 1.218-1.579 1.218-2.585v-1.12c0-1.29-.75-2.482-1.977-3.032l-1.571-.703a.5.5 0 0 0-.317 0l-1.572.703C19.782.788 18.91 0 17.844 0H4.92c-1.066 0-2.042.36-2.766.986C1.371 1.63 0 2.456 0 3.327v1.12c0 1.006.469 1.939 1.218 2.586Zm19.13-3.41c0-.49-.138-.946-.395-1.324-.257-.378-.606-.677-1.018-.887l-.46-.231c-1.144-.575-2.433-.873-3.72-.873h-7.66C8.24 0 6.95 0 5.805.575l-.46.23c-.412.21-.761.509-1.018.887-.257.378-.395.834-.395 1.324v1.12c0 .49.138.946.395 1.324.257.378.606.677 1.018.887l.46.231c1.144.575 2.433.873 3.72.873h7.66c1.287 0 2.576-.298 3.72-.873l.46-.231c.412-.21.761-.509 1.018-.887.257-.378.395-.834.395-1.324v-1.12Zm-1.879 4.316c-.053-.024-.11-.044-.168-.063-.518-.168-1.05-.256-1.585-.256h-2.138c-1.42 0-2.735.61-3.79 1.768l-1.006 1.14c-.66.75-.992 1.637-.962 2.535l-.018 2.518c0 .276.224.5.5.5h14c.276 0 .5-.224.5-.5v-2.518c0-1.06-.48-2.062-1.32-2.775l-.64-1.049c-.58-1.026-1.588-1.61-2.712-1.61h-2.124Z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                        <h2 class="text-xl font-bold">
+                                            Transmissão da Câmera
+                                        </h2>
+                                    </div>
+                                    <p
+                                        class="text-xs font-light text-gray-500 hidden sm:block"
+                                    >
+                                        Conecte sua câmera para começar a usar o thermo
+                                        vision
+                                    </p>
+                                </div>
+
+                                <!-- Seletor de Câmera -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Selecionar Câmera:
+                                    </label>
+                                    <div class="flex space-x-2">
+                                        <select id="camera-select" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option value="">Carregando câmeras...</option>
+                                        </select>
+                                        <button id="refresh-cameras" class="btn-acao px-4 py-2 bg-blue-500 text-white hover:bg-blue-600">
+                                            🔄
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Área de Streaming / Placeholder -->
+                                <div
+                                    id="video-container"
+                                    class="relative w-full aspect-video bg-gray-200 border-2 border-dashed border-gray-500 rounded-xl flex flex-col items-center justify-center p-4 min-h-[350px]"
+                                >
+                                    <!-- Elemento de Imagem para o Stream (apontará para o Flask /video_feed) -->
+                                    <img
+                                        id="camera-stream"
+                                        src=""
+                                        alt="Live Video Feed"
+                                        class="hidden"
+                                    />
+
+                                    <!-- Mensagem de Câmera Desconectada (Inicial) -->
+                                    <div id="disconnected-message" class="text-center">
+                                        <!-- Ícone de Câmera Off Placeholder -->
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            fill="currentColor"
+                                            class="w-12 h-12 mx-auto mb-3 text-gray-500"
+                                        >
+                                            <path
+                                                d="M4.5 4.5l3 3m12 0l-3-3m-9 3l3 3m-3-3l-3 3"
+                                            />
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M11.25 5.688A11.954 11.954 0 0 1 12 4.5c1.111 0 2.19.18 3.23.538l-1.385 1.385A9.704 9.704 0 0 0 12 6.75c-.968 0-1.905.11-2.798.318L8.685 5.488ZM20.25 12c0-.518-.046-1.026-.135-1.524a41.288 41.288 0 0 0-.903-2.185l-1.42 1.42a8.25 8.25 0 0 1-.169 1.549h2.518ZM1.75 12c0 .518.046 1.026.135 1.524a41.288 41.288 0 0 0 .903 2.185l1.42-1.42a8.25 8.25 0 0 1 .169-1.549H1.885ZM12 2.25c5.385 0 9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12 6.615 2.25 12 2.25Z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                        <p
+                                            class="text-lg font-light text-gray-500 mt-2"
+                                        >
+                                            Nenhuma Câmera conectada
+                                        </p>
+                                        <p class="text-base font-light text-gray-500">
+                                            Selecione uma câmera e clique em conectar
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Botão de Ação -->
+                                <button
+                                    id="connect-button"
+                                    class="btn-acao w-full py-3 mt-5 text-lg font-extrabold bg-amber-500 text-zinc-900 focus:outline-none focus:ring-4 focus:ring-amber-500 focus:ring-opacity-50"
+                                >
+                                    Conectar Câmera
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Área de Streaming / Placeholder -->
-                        <div
-                            id="video-container"
-                            class="relative w-full aspect-video bg-gray-200 border-2 border-dashed border-gray-500 rounded-xl flex flex-col items-center justify-center p-4 min-h-[350px]"
-                        >
-                            <!-- Elemento de Imagem para o Stream (apontará para o Flask /video_feed) -->
-                            <img
-                                id="camera-stream"
-                                src=""
-                                alt="Live Video Feed"
-                                class="hidden"
-                            />
+                        <!-- Coluna Direita: Status e Ações -->
+                        <div class="lg:col-span-1 space-y-8">
+                            <!-- Card de Status -->
+                            <div id="status" class="cartao-principal bg-white p-6 rounded-xl">
+                                <h3 class="text-xl font-bold mb-4">Status</h3>
+                                <div
+                                    class="flex justify-between items-center py-3 border-t-2 border-gray-200"
+                                >
+                                    <span class="font-semibold text-zinc-700"
+                                        >Câmera</span
+                                    >
+                                    <div
+                                        id="status-display"
+                                        class="px-4 py-1 rounded-full text-sm font-bold bg-red-200 text-red-700 border border-red-700"
+                                    >
+                                        Desconectada
+                                    </div>
+                                </div>
+                                <div
+                                    class="flex justify-between items-center py-3 border-t-2 border-gray-200"
+                                >
+                                    <span class="font-semibold text-zinc-700"
+                                        >Câmera Selecionada</span
+                                    >
+                                    <span id="selected-camera" class="text-sm text-gray-600">Nenhuma</span>
+                                </div>
+                                <!-- (Outros itens de status viriam aqui) -->
+                            </div>
 
-                            <!-- Mensagem de Câmera Desconectada (Inicial) -->
-                            <div id="disconnected-message" class="text-center">
-                                <!-- Ícone de Câmera Off Placeholder -->
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    class="w-12 h-12 mx-auto mb-3 text-gray-500"
+                            <!-- Card de Ações -->
+                            <div id="acoes" class="cartao-principal bg-white p-6 rounded-xl">
+                                <h3 class="text-xl font-bold mb-4">Ações</h3>
+
+                                <button
+                                    class="btn-acao w-full py-3 mb-4 bg-gray-200 text-zinc-900 font-bold hover:bg-gray-300"
                                 >
-                                    <path
-                                        d="M4.5 4.5l3 3m12 0l-3-3m-9 3l3 3m-3-3l-3 3"
-                                    />
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M11.25 5.688A11.954 11.954 0 0 1 12 4.5c1.111 0 2.19.18 3.23.538l-1.385 1.385A9.704 9.704 0 0 0 12 6.75c-.968 0-1.905.11-2.798.318L8.685 5.488ZM20.25 12c0-.518-.046-1.026-.135-1.524a41.288 41.288 0 0 0-.903-2.185l-1.42 1.42a8.25 8.25 0 0 1-.169 1.549h2.518ZM1.75 12c0 .518.046 1.026.135 1.524a41.288 41.288 0 0 0 .903 2.185l1.42-1.42a8.25 8.25 0 0 1 .169-1.549H1.885ZM12 2.25c5.385 0 9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12 6.615 2.25 12 2.25Z"
-                                        clip-rule="evenodd"
-                                    />
-                                </svg>
-                                <p
-                                    class="text-lg font-light text-gray-500 mt-2"
+                                    Registrar imagem
+                                </button>
+
+                                <button
+                                    class="btn-acao w-full py-3 mb-4 bg-gray-200 text-zinc-900 font-bold hover:bg-gray-300"
                                 >
-                                    Nenhuma Câmera conectada
-                                </p>
-                                <p class="text-base font-light text-gray-500">
-                                    Selecione uma câmera e clique em conectar
-                                </p>
+                                    Iniciar a captura (Análise contínua)
+                                </button>
+
+                                <button
+                                    class="btn-acao w-full py-3 bg-gray-200 text-zinc-900 font-bold hover:bg-gray-300"
+                                >
+                                    Ver Histórico
+                                </button>
                             </div>
                         </div>
-
-                        <!-- Botão de Ação -->
-                        <button
-                            id="connect-button"
-                            class="btn-acao w-full py-3 mt-5 text-lg font-extrabold bg-amber-500 text-zinc-900 focus:outline-none focus:ring-4 focus:ring-amber-500 focus:ring-opacity-50"
-                        >
-                            Conectar Câmera
-                        </button>
                     </div>
-                </div>
-
-                <!-- Coluna Direita: Status e Ações -->
-                <div class="lg:col-span-1 space-y-8">
-                    <!-- Card de Status -->
-                    <div class="cartao-principal bg-white p-6 rounded-xl">
-                        <h3 class="text-xl font-bold mb-4">Status</h3>
-                        <div
-                            class="flex justify-between items-center py-3 border-t-2 border-gray-200"
-                        >
-                            <span class="font-semibold text-zinc-700"
-                                >Câmera</span
-                            >
-                            <div
-                                id="status-display"
-                                class="px-4 py-1 rounded-full text-sm font-bold bg-red-200 text-red-700 border border-red-700"
-                            >
-                                Desconectada
-                            </div>
-                        </div>
-                        <div
-                            class="flex justify-between items-center py-3 border-t-2 border-gray-200"
-                        >
-                            <span class="font-semibold text-zinc-700"
-                                >Câmera Selecionada</span
-                            >
-                            <span id="selected-camera" class="text-sm text-gray-600">Nenhuma</span>
-                        </div>
-                        <!-- (Outros itens de status viriam aqui) -->
-                    </div>
-
-                    <!-- Card de Ações -->
-                    <div class="cartao-principal bg-white p-6 rounded-xl">
-                        <h3 class="text-xl font-bold mb-4">Ações</h3>
-
-                        <button
-                            class="btn-acao w-full py-3 mb-4 bg-gray-200 text-zinc-900 font-bold hover:bg-gray-300"
-                        >
-                            Registrar imagem
-                        </button>
-
-                        <button
-                            class="btn-acao w-full py-3 mb-4 bg-gray-200 text-zinc-900 font-bold hover:bg-gray-300"
-                        >
-                            Iniciar a captura (Análise contínua)
-                        </button>
-
-                        <button
-                            class="btn-acao w-full py-3 bg-gray-200 text-zinc-900 font-bold hover:bg-gray-300"
-                        >
-                            Ver Histórico
-                        </button>
-                    </div>
-                </div>
-            </main>
+                </main>
+            </div>
         </div>
 
         <!-- Carregando o arquivo JavaScript externo -->
