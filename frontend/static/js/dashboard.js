@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const cameraSelect = document.getElementById("camera-select");
     const refreshCamerasButton = document.getElementById("refresh-cameras");
     const selectedCameraSpan = document.getElementById("selected-camera");
+    const fullscreenBtn = document.getElementById("fullscreen-btn");
     const linksNavegacao = document.querySelectorAll("[data-target]");
     const secDashboard = document.getElementById("sec-dashboard");
     const secStreaming = document.getElementById("sec-streaming");
@@ -647,6 +648,17 @@ document.addEventListener('DOMContentLoaded', function() {
     if (addLocalRefresh) {
         addLocalRefresh.addEventListener("click", () => {
             loadAvailableCameras();
+        });
+    }
+
+    if (fullscreenBtn && videoContainer) {
+        fullscreenBtn.addEventListener("click", () => {
+            const alvo = videoContainer;
+            if (!document.fullscreenElement) {
+                alvo.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen().catch(() => {});
+            }
         });
     }
 
