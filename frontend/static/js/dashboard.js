@@ -14,7 +14,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const cameraSelect = document.getElementById("camera-select");
     const refreshCamerasButton = document.getElementById("refresh-cameras");
     const selectedCameraSpan = document.getElementById("selected-camera");
-    const linksNavegacao = document.querySelectorAll("[data-rota]");
+    const linksNavegacao = document.querySelectorAll("[data-target]");
+    const secDashboard = document.getElementById("sec-dashboard");
+    const secStreaming = document.getElementById("sec-streaming");
+    let secaoAtual = "dashboard";
 
     let isConnected = false;
     let availableCameras = [];
@@ -23,15 +26,36 @@ document.addEventListener('DOMContentLoaded', function() {
     const videoFeedUrl = "/video_feed";
 
     // Controle da navbar
-    function destacarLinkAtivo() {
-        const caminho = window.location.pathname;
-        const hash = window.location.hash;
+    function destacarLinkAtivo(alvo) {
         linksNavegacao.forEach((link) => {
-            const rota = link.dataset.rota || link.getAttribute("href");
-            const ativo = (rota && caminho.startsWith(rota)) || (hash && rota === hash);
+            const rota = link.dataset.target;
+            const ativo = rota === alvo;
             link.classList.toggle("bg-white/10", ativo);
             link.classList.toggle("text-white", ativo);
         });
+    }
+
+    function mostrarSecao(alvo) {
+        const destino = alvo === "streaming" ? "streaming" : "dashboard";
+        secaoAtual = destino;
+
+        if (secDashboard && secStreaming) {
+            if (destino === "streaming") {
+                secDashboard.classList.add("hidden");
+                secStreaming.classList.remove("hidden");
+                if (window.location.hash !== "#streaming") {
+                    window.location.hash = "streaming";
+                }
+            } else {
+                secDashboard.classList.remove("hidden");
+                secStreaming.classList.add("hidden");
+                if (window.location.hash) {
+                    history.replaceState(null, "", window.location.pathname);
+                }
+            }
+        }
+
+        destacarLinkAtivo(destino);
     }
 
     function abrirMenuMobile() {
@@ -65,11 +89,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     linksNavegacao.forEach((link) => {
-        link.addEventListener("click", () => fecharMenuMobile());
+        link.addEventListener("click", (evento) => {
+            evento.preventDefault();
+            const alvo = link.dataset.target;
+            mostrarSecao(alvo);
+            fecharMenuMobile();
+        });
     });
 
-    destacarLinkAtivo();
-    window.addEventListener("hashchange", destacarLinkAtivo);
+    const hashInicial = window.location.hash === "#streaming" ? "streaming" : "dashboard";
+    mostrarSecao(hashInicial);
+    window.addEventListener("hashchange", () => {
+        const alvo = window.location.hash === "#streaming" ? "streaming" : "dashboard";
+        mostrarSecao(alvo);
+    });
 
     // Função para carregar lista de câmeras disponíveis
     async function loadAvailableCameras() {

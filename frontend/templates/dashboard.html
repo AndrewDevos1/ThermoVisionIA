@@ -82,8 +82,8 @@
                 </div>
                 <nav class="flex-1 px-3 py-6 space-y-2">
                     <a
-                        href="/dashboard"
-                        data-rota="/dashboard"
+                        href="#"
+                        data-target="dashboard"
                         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
                     >
                         <svg
@@ -103,8 +103,8 @@
                         <span>Dashboard</span>
                     </a>
                     <a
-                        href="#video-container"
-                        data-rota="#video-container"
+                        href="#streaming"
+                        data-target="streaming"
                         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
                     >
                         <svg
@@ -124,8 +124,8 @@
                         <span>Streaming</span>
                     </a>
                     <a
-                        href="#acoes"
-                        data-rota="#acoes"
+                        href="#streaming"
+                        data-target="streaming"
                         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
                     >
                         <svg
@@ -145,8 +145,8 @@
                         <span>Ações rápidas</span>
                     </a>
                     <a
-                        href="#status"
-                        data-rota="#status"
+                        href="#streaming"
+                        data-target="streaming"
                         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
                     >
                         <svg
@@ -196,32 +196,32 @@
                     </div>
                     <nav class="space-y-2 flex-1">
                         <a
-                            href="/dashboard"
-                            data-rota="/dashboard"
+                            href="#"
+                            data-target="dashboard"
                             class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
                         >
                             <span class="text-lg">🏠</span>
                             <span>Dashboard</span>
                         </a>
                         <a
-                            href="#video-container"
-                            data-rota="#video-container"
+                            href="#streaming"
+                            data-target="streaming"
                             class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
                         >
                             <span class="text-lg">🎥</span>
                             <span>Streaming</span>
                         </a>
                         <a
-                            href="#acoes"
-                            data-rota="#acoes"
+                            href="#streaming"
+                            data-target="streaming"
                             class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
                         >
                             <span class="text-lg">⚡</span>
                             <span>Ações rápidas</span>
                         </a>
                         <a
-                            href="#status"
-                            data-rota="#status"
+                            href="#streaming"
+                            data-target="streaming"
                             class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
                         >
                             <span class="text-lg">📊</span>
@@ -256,7 +256,93 @@
                 </header>
 
                 <main class="flex-1 p-4 md:p-8">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Seção Dashboard (resumo) -->
+                    <section id="sec-dashboard" class="space-y-8">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="cartao-principal bg-white p-4 rounded-xl">
+                                <p class="text-xs uppercase text-gray-500 font-semibold">
+                                    Temp. média (última hora)
+                                </p>
+                                <p class="text-3xl font-extrabold text-zinc-900 mt-2">68°C</p>
+                                <p class="text-sm text-gray-600 mt-1">
+                                    Ambiente estável, sem variações críticas.
+                                </p>
+                            </div>
+                            <div class="cartao-principal bg-white p-4 rounded-xl">
+                                <p class="text-xs uppercase text-gray-500 font-semibold">
+                                    Pico registrado
+                                </p>
+                                <p class="text-3xl font-extrabold text-amber-600 mt-2">92°C</p>
+                                <p class="text-sm text-gray-600 mt-1">
+                                    Último pico há 18 min.
+                                </p>
+                            </div>
+                            <div class="cartao-principal bg-white p-4 rounded-xl">
+                                <p class="text-xs uppercase text-gray-500 font-semibold">
+                                    Alertas ativos
+                                </p>
+                                <p class="text-3xl font-extrabold text-red-600 mt-2">2</p>
+                                <p class="text-sm text-gray-600 mt-1">
+                                    Revise sensores 03 e 07.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <div class="lg:col-span-2 cartao-principal bg-white p-6 rounded-xl">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-lg">🎯</span>
+                                        <h2 class="text-xl font-bold">Resumo rápido</h2>
+                                    </div>
+                                    <span class="text-sm text-gray-500">Última atualização: agora</span>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
+                                        <p class="text-sm font-semibold text-gray-700">Setor crítico</p>
+                                        <p class="text-xl font-bold text-red-600 mt-2">Linha 2</p>
+                                        <p class="text-sm text-gray-600">
+                                            Temperatura 15% acima da média.
+                                        </p>
+                                    </div>
+                                    <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
+                                        <p class="text-sm font-semibold text-gray-700">Tendência</p>
+                                        <p class="text-xl font-bold text-amber-600 mt-2">Aquecendo</p>
+                                        <p class="text-sm text-gray-600">
+                                            Monitore durante o próximo ciclo.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="cartao-principal bg-white p-6 rounded-xl">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <span class="text-lg">📷</span>
+                                    <h3 class="text-xl font-bold">Câmeras cadastradas</h3>
+                                </div>
+                                <ul class="space-y-3 text-sm text-gray-700">
+                                    <li class="flex justify-between">
+                                        <span>Câmera Demo</span>
+                                        <span class="text-green-600 font-semibold">Ativa</span>
+                                    </li>
+                                    <li class="flex justify-between">
+                                        <span>Câmera 01 (Linha 1)</span>
+                                        <span class="text-yellow-600 font-semibold">Standby</span>
+                                    </li>
+                                    <li class="flex justify-between">
+                                        <span>Câmera 02 (Linha 2)</span>
+                                        <span class="text-red-600 font-semibold">Alerta</span>
+                                    </li>
+                                </ul>
+                                <p class="text-xs text-gray-500 mt-3">
+                                    Edite as fontes em tempo real no menu Streaming.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Seção Streaming -->
+                    <section id="sec-streaming" class="grid grid-cols-1 lg:grid-cols-3 gap-8 hidden">
                         <!-- Coluna Esquerda: Transmissão da Câmera (Card Maior) -->
                         <div class="lg:col-span-2">
                             <div class="cartao-principal bg-white p-6 rounded-xl">
@@ -329,7 +415,7 @@
                                             />
                                             <path
                                                 fill-rule="evenodd"
-                                                d="M11.25 5.688A11.954 11.954 0 0 1 12 4.5c1.111 0 2.19.18 3.23.538l-1.385 1.385A9.704 9.704 0 0 0 12 6.75c-.968 0-1.905.11-2.798.318L8.685 5.488ZM20.25 12c0-.518-.046-1.026-.135-1.524a41.288 41.288 0 0 0-.903-2.185l-1.42 1.42a8.25 8.25 0 0 1-.169 1.549h2.518ZM1.75 12c0 .518.046 1.026.135 1.524a41.288 41.288 0 0 0 .903 2.185l1.42-1.42a8.25 8.25 0 0 1 .169-1.549H1.885ZM12 2.25c5.385 0 9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12 6.615 2.25 12 2.25Z"
+                                                d="M11.25 5.688A11.954 11.954 0 0 1 12 4.5c1.111 0 2.19.18 3.23.538l-1.385 1.385A9.704 9.704 0 0 0 12 6.75c-.968 0-1.905.11-2.798.318L8.685 5.488ZM20.25 12c0-.518-.046-1.026-.135-1.524a41.288 41.288 0 0 0-.903-2.185l-1.42 1.42a8.25 8.25 0 0 1-.169 1.549h2.518ZM1.75 12c0 .518.046 1.026.135 1.524a41.288 41.288 0 0 0 .903-2.185l1.42-1.42a8.25 8.25 0 0 1 .169-1.549H1.885ZM12 2.25c5.385 0 9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12 6.615 2.25 12 2.25Z"
                                                 clip-rule="evenodd"
                                             />
                                         </svg>
@@ -406,7 +492,7 @@
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </section>
                 </main>
             </div>
         </div>
