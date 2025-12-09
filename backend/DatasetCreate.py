@@ -2,10 +2,10 @@ import cv2
 import time
 import os
 
-# Substitua pelos seus dados
+# Substitua pelos seus dados  192.168.88.110
 usuario = 'admin'
 senha = 'Kaiser@210891'
-ip = '192.168.88.3'
+ip = '192.168.88.110'
 porta = 554
 
 url = f'rtsp://{usuario}:{senha}@{ip}:{porta}/cam/realmonitor?channel=1&subtype=0'

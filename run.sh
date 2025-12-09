@@ -140,6 +140,14 @@ run_backend() {
     echo ""
     
     cd backend
+    
+    # Usa o Python do venv do frontend para garantir dependências (OpenCV, etc.)
+    if [ -d "../frontend/venv" ]; then
+        source ../frontend/venv/bin/activate
+    else
+        log_warning "Ambiente virtual não encontrado em frontend/venv. Continuando com python do sistema."
+    fi
+
     echo "Scripts disponíveis:"
     ls -1 *.py | nl -s") "
     echo ""
