@@ -103,8 +103,8 @@
                         <span>Dashboard</span>
                     </a>
                     <a
-                        href="#beta"
-                        data-target="beta"
+                        href="#add"
+                        data-target="add"
                         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
                     >
                         <svg
@@ -127,7 +127,7 @@
                                 d="M9.75 9.75h.008v.008H9.75V9.75Zm4.5 0h.008v.008h-.008V9.75Zm-4.5 4.5h.008v.008H9.75v-.008Zm4.5 0h.008v.008h-.008v-.008Z"
                             />
                         </svg>
-                        <span>Beta Test</span>
+                        <span>Adicionar Câmera</span>
                     </a>
                     <a
                         href="#streaming"
@@ -231,12 +231,12 @@
                             <span>Dashboard</span>
                         </a>
                         <a
-                            href="#beta"
-                            data-target="beta"
+                            href="#add"
+                            data-target="add"
                             class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
                         >
-                            <span class="text-lg">🧪</span>
-                            <span>Beta Test</span>
+                            <span class="text-lg">➕</span>
+                            <span>Adicionar Câmera</span>
                         </a>
                         <a
                             href="#streaming"
@@ -529,13 +529,13 @@
                         </div>
                     </section>
 
-                    <!-- Seção Beta Test -->
-                    <section id="sec-beta" class="space-y-8 hidden">
+                    <!-- Seção Adicionar Câmera -->
+                    <section id="sec-add" class="space-y-8 hidden">
                         <div class="cartao-principal bg-white p-6 rounded-xl">
                             <div class="flex items-center justify-between mb-4">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-lg">🧪</span>
-                                    <h2 class="text-xl font-bold">Beta Test — Câmeras RTSP</h2>
+                                    <span class="text-lg">➕</span>
+                                    <h2 class="text-xl font-bold">Adicionar Câmera</h2>
                                 </div>
                                 <p class="text-xs text-gray-500">Configure URLs personalizadas de câmera</p>
                             </div>
@@ -613,6 +613,19 @@
                                         <p class="text-gray-500">Nenhuma câmera cadastrada ainda.</p>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="cartao-principal bg-white p-6 rounded-xl">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-lg">💻</span>
+                                    <h3 class="text-xl font-bold">Câmeras locais detectadas</h3>
+                                </div>
+                                <button id="add-local-refresh" class="btn-acao px-3 py-2 bg-gray-200 text-zinc-900 hover:bg-gray-300">Atualizar lista</button>
+                            </div>
+                            <div id="add-local-lista" class="space-y-2 text-sm text-gray-700">
+                                <p class="text-gray-500">Nenhuma câmera detectada ou não carregada ainda.</p>
                             </div>
                         </div>
                     </section>

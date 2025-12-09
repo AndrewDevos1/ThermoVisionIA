@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const linksNavegacao = document.querySelectorAll("[data-target]");
     const secDashboard = document.getElementById("sec-dashboard");
     const secStreaming = document.getElementById("sec-streaming");
-    const secBeta = document.getElementById("sec-beta");
+    const secAdd = document.getElementById("sec-add");
     const betaNome = document.getElementById("beta-nome");
     const betaUrl = document.getElementById("beta-url");
     const betaSalvar = document.getElementById("beta-salvar");
@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const intelbrasPort = document.getElementById("intelbras-port");
     const intelbrasAuto = document.getElementById("intelbras-auto");
     const intelbrasMontar = document.getElementById("intelbras-montar");
+    const addLocalLista = document.getElementById("add-local-lista");
+    const addLocalRefresh = document.getElementById("add-local-refresh");
     let secaoAtual = "dashboard";
 
     let isConnected = false;
@@ -52,21 +54,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function mostrarSecao(alvo) {
-        const destinoValido = ["dashboard", "streaming", "beta"].includes(alvo) ? alvo : "dashboard";
+        const destinoValido = ["dashboard", "streaming", "add"].includes(alvo) ? alvo : "dashboard";
         secaoAtual = destinoValido;
 
-        if (secDashboard && secStreaming && secBeta) {
+        if (secDashboard && secStreaming && secAdd) {
             secDashboard.classList.toggle("hidden", destinoValido !== "dashboard");
             secStreaming.classList.toggle("hidden", destinoValido !== "streaming");
-            secBeta.classList.toggle("hidden", destinoValido !== "beta");
+            secAdd.classList.toggle("hidden", destinoValido !== "add");
 
             if (destinoValido === "streaming") {
                 if (window.location.hash !== "#streaming") {
                     window.location.hash = "streaming";
                 }
-            } else if (destinoValido === "beta") {
-                if (window.location.hash !== "#beta") {
-                    window.location.hash = "beta";
+            } else if (destinoValido === "add") {
+                if (window.location.hash !== "#add") {
+                    window.location.hash = "add";
                 }
             } else {
                 if (window.location.hash) {
@@ -119,15 +121,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const hashInicial = window.location.hash === "#streaming"
         ? "streaming"
-        : window.location.hash === "#beta"
-            ? "beta"
+        : window.location.hash === "#add"
+            ? "add"
             : "dashboard";
     mostrarSecao(hashInicial);
     window.addEventListener("hashchange", () => {
         const alvo = window.location.hash === "#streaming"
             ? "streaming"
-            : window.location.hash === "#beta"
-                ? "beta"
+            : window.location.hash === "#add"
+                ? "add"
                 : "dashboard";
         mostrarSecao(alvo);
     });
@@ -141,6 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (result.success) {
                 availableCameras = result.cameras;
                 updateCameraSelect();
+                renderizarLocais();
                 console.log(`Encontradas ${result.count} câmeras:`, availableCameras);
             } else {
                 console.error("Erro ao carregar câmeras:", result.message);
@@ -176,6 +179,30 @@ document.addEventListener('DOMContentLoaded', function() {
             option.textContent = `${cam.nome || "Custom"} (RTSP)`;
             option.dataset.rtsp = cam.url;
             cameraSelect.appendChild(option);
+        });
+    }
+
+    function renderizarLocais() {
+        if (!addLocalLista) return;
+        if (availableCameras.length === 0) {
+            addLocalLista.innerHTML = '<p class="text-gray-500">Nenhuma câmera detectada.</p>';
+            return;
+        }
+        addLocalLista.innerHTML = "";
+        availableCameras.forEach((cam) => {
+            const linha = document.createElement("div");
+            linha.className = "p-3 border border-gray-200 rounded-lg bg-white flex flex-col gap-2";
+            const labelRes = cam.resolution ? ` (${cam.resolution})` : "";
+            linha.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="font-semibold">${cam.name}</p>
+                        <p class="text-xs text-gray-500">Index: ${cam.index}${labelRes}</p>
+                    </div>
+                    <button class="btn-acao px-3 py-2 bg-blue-500 text-white hover:bg-blue-600" data-acao="usar-local" data-idx="${cam.index}">Usar</button>
+                </div>
+            `;
+            addLocalLista.appendChild(linha);
         });
     }
 
@@ -601,6 +628,25 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (acao === "remover") {
                 removerCamera(idx);
             }
+        });
+    }
+
+    if (addLocalLista) {
+        addLocalLista.addEventListener("click", (e) => {
+            const botao = e.target.closest("button");
+            if (!botao) return;
+            if (botao.dataset.acao === "usar-local") {
+                const idx = parseInt(botao.dataset.idx, 10);
+                // reutiliza fluxo padrão de conexão por índice
+                cameraSelect.value = idx;
+                connectButton.click();
+            }
+        });
+    }
+
+    if (addLocalRefresh) {
+        addLocalRefresh.addEventListener("click", () => {
+            loadAvailableCameras();
         });
     }
 
