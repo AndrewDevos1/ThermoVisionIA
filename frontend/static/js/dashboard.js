@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let isConnected = false;
     let availableCameras = [];
     let selectedCameraIndex = 0;
+    let scriptsDisponiveis = [];
     const viewerCards = [];
     // URL do feed de vídeo do Flask
     const videoFeedUrl = "/video_feed";
@@ -222,6 +223,46 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Scripts avançados
+    async function loadScripts() {
+        try {
+            const resp = await fetch("/scripts/list");
+            const result = await resp.json();
+            if (result.success) {
+                scriptsDisponiveis = result.scripts || [];
+                updateScriptSelects();
+            } else {
+                console.error("Erro ao listar scripts:", result.message);
+            }
+        } catch (e) {
+            console.error("Erro ao buscar scripts:", e);
+        }
+    }
+
+    function popularScripts(selectEl) {
+        if (!selectEl) return;
+        selectEl.innerHTML = '<option value="">Selecione um script...</option>';
+        if (scriptsDisponiveis.length === 0) {
+            const opt = document.createElement("option");
+            opt.value = "";
+            opt.textContent = "Nenhum script encontrado";
+            selectEl.appendChild(opt);
+            return;
+        }
+        scriptsDisponiveis.forEach((nome) => {
+            const opt = document.createElement("option");
+            opt.value = nome;
+            opt.textContent = nome;
+            selectEl.appendChild(opt);
+        });
+    }
+
+    function updateScriptSelects() {
+        viewerCards.forEach((viewer) => {
+            popularScripts(viewer.scriptSelect);
+        });
+    }
+
     // Função para atualizar o status visual
     function updateStatus(viewer, connected, labelPersonalizado = null) {
         isConnected = connected;
@@ -290,8 +331,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const statusBadge = cardEl.querySelector(".viewer-status");
         const selectedLabel = cardEl.querySelector(".viewer-selected");
         const removeBtn = cardEl.querySelector(".remove-viewer");
+        const blocoAvancado = cardEl.querySelector(".bloco-avancado");
+        const avancadoToggle = cardEl.querySelector(".avancado-toggle");
+        const scriptSelect = cardEl.querySelector(".script-select");
+        const refreshScriptsBtn = cardEl.querySelector(".refresh-scripts");
+        const executarScriptBtn = cardEl.querySelector(".executar-script");
+        const feedbackScript = cardEl.querySelector(".feedback-script");
 
-        const viewer = { cardEl, select, refreshBtn, connectBtn, streamImg, disconnectedMsg, videoContainer, fullscreenBtn, statusBadge, selectedLabel };
+        const viewer = { cardEl, select, refreshBtn, connectBtn, streamImg, disconnectedMsg, videoContainer, fullscreenBtn, statusBadge, selectedLabel, blocoAvancado, avancadoToggle, scriptSelect, refreshScriptsBtn, executarScriptBtn, feedbackScript };
 
         if (refreshBtn) {
             refreshBtn.addEventListener("click", () => {
@@ -326,6 +373,47 @@ document.addEventListener('DOMContentLoaded', function() {
                 const idx = viewerCards.indexOf(viewer);
                 if (idx !== -1) viewerCards.splice(idx, 1);
                 cardEl.remove();
+            });
+        }
+
+        if (avancadoToggle && blocoAvancado) {
+            avancadoToggle.addEventListener("click", () => {
+                blocoAvancado.classList.toggle("hidden");
+            });
+        }
+
+        if (refreshScriptsBtn) {
+            refreshScriptsBtn.addEventListener("click", () => {
+                loadScripts();
+            });
+        }
+
+        if (executarScriptBtn && scriptSelect) {
+            executarScriptBtn.addEventListener("click", async () => {
+                const script = scriptSelect.value;
+                if (!script) {
+                    alert("Selecione um script para executar.");
+                    return;
+                }
+                if (feedbackScript) feedbackScript.textContent = "Executando...";
+                try {
+                    const resp = await fetch("/scripts/run", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ script }),
+                    });
+                    const result = await resp.json();
+                    if (result.success) {
+                        if (feedbackScript) feedbackScript.textContent = result.message || "Script iniciado.";
+                    } else {
+                        if (feedbackScript) feedbackScript.textContent = result.message || "Falha ao executar.";
+                        alert(result.message || "Falha ao executar script.");
+                    }
+                } catch (e) {
+                    console.error(e);
+                    if (feedbackScript) feedbackScript.textContent = "Erro ao executar.";
+                    alert("Erro ao executar script.");
+                }
             });
         }
 
@@ -451,10 +539,19 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             const selectedLbl = clone.querySelector(".viewer-selected");
             if (selectedLbl) selectedLbl.textContent = "Nenhuma";
+            const blocoAvancado = clone.querySelector(".bloco-avancado");
+            if (blocoAvancado) blocoAvancado.classList.add("hidden");
+            const feedbackScript = clone.querySelector(".feedback-script");
+            if (feedbackScript) feedbackScript.textContent = "Selecione um script para executar.";
+            const scriptSelect = clone.querySelector(".script-select");
+            if (scriptSelect) {
+                scriptSelect.innerHTML = '<option value="">Selecione um script...</option>';
+            }
 
             streamingList.appendChild(clone);
             criarViewer(clone);
             updateAllSelects();
+            updateScriptSelects();
         });
     }
 
@@ -729,5 +826,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Inicialização
     loadAvailableCameras();
+    loadScripts();
     viewerCards.forEach(v => updateStatus(v, false));
 });

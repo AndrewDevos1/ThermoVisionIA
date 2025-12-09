@@ -24,6 +24,9 @@ from utils.validacoes import (
 from utils.manipular_forms import obter_dados_login, obter_dados_cadastro
 import config
 import os
+import subprocess
+import sys
+from pathlib import Path
 
 app = Flask(__name__)
 app.secret_key = "d2ccd1731dc1cca262d6c889e3352a921f973db9698cc4ba"
@@ -340,6 +343,57 @@ def disconnect_camera():
         return jsonify(
             {"success": False, "message": f"Erro ao desconectar câmera: {str(e)}"}
         )
+
+
+def listar_scripts_backend():
+    """Lista scripts .py disponíveis no diretório backend (nível superior)."""
+    raiz = Path(__file__).resolve().parent.parent / "backend"
+    scripts = []
+    if raiz.exists():
+        for item in raiz.iterdir():
+            if item.is_file() and item.suffix == ".py":
+                scripts.append(item.name)
+    return sorted(scripts)
+
+
+@app.route("/scripts/list", methods=["GET"])
+def listar_scripts():
+    """Retorna os scripts Python disponíveis para execução."""
+    scripts = listar_scripts_backend()
+    return jsonify({"success": True, "scripts": scripts, "count": len(scripts)})
+
+
+@app.route("/scripts/run", methods=["POST"])
+def executar_script():
+    """Executa um script Python do diretório backend."""
+    data = request.get_json() or {}
+    nome_script = data.get("script")
+    if not nome_script:
+        return jsonify({"success": False, "message": "Informe o nome do script."}), 400
+
+    scripts_disponiveis = listar_scripts_backend()
+    if nome_script not in scripts_disponiveis:
+        return jsonify({"success": False, "message": "Script não permitido."}), 400
+
+    raiz = Path(__file__).resolve().parent.parent / "backend"
+    caminho = raiz / nome_script
+
+    try:
+        proc = subprocess.Popen(
+            [sys.executable, str(caminho)],
+            cwd=str(raiz),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        return jsonify(
+            {
+                "success": True,
+                "message": f"Script {nome_script} iniciado (pid={proc.pid}).",
+                "pid": proc.pid,
+            }
+        )
+    except Exception as e:
+        return jsonify({"success": False, "message": f"Erro ao executar: {e}"}), 500
 
 
 # Rota principal: Tela de login
