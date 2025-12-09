@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Tela de Cadastro" />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/cadastro.css') }}"
+        />
+        <title>Página de Cadastro</title>
+    </head>
+
+    <body>
+        <div class="cadastro-container">
+            <div class="cartao-cadastro">
+                <div class="cabecalho-cartao">
+                    <h1>Criar conta</h1>
+                    <p>Preencha os campos abaixo para se cadastrar</p>
+                </div>
+
+                {% with mensagens = get_flashed_messages() %} {% if mensagens %}
+                <ul>
+                    {% for mensagem in mensagens %}
+                    <li class="mensagem-validacao">{{ mensagem }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %} {% endwith %}
+
+                <form
+                    id="formCadastro"
+                    class="formulario-cadastro"
+                    autocomplete="off"
+                    method="POST"
+                >
+                    <div class="item-formulario">
+                        <label for="c_usuario">Nome de usuário</label>
+                        <input
+                            type="text"
+                            id="c_usuario"
+                            name="c_usuario"
+                            placeholder="ex: JoaoSilva25"
+                            required
+                            value="{{ user_data[0] if user_data else '' }}"
+                        />
+                    </div>
+
+                    <div class="item-formulario">
+                        <label for="c_email">E-mail</label>
+                        <input
+                            type="email"
+                            id="c_email"
+                            name="c_email"
+                            placeholder="seu-email@gmail.com"
+                            required
+                            value="{{ user_data[1] if user_data else '' }}"
+                        />
+                    </div>
+
+                    <div class="item-formulario">
+                        <label for="c_telefone">Telefone</label>
+                        <input
+                            type="text"
+                            name="c_telefone"
+                            id="c_telefone"
+                            placeholder="(XX) XXXXX-XXXX"
+                            required
+                        />
+                    </div>
+
+                    <div class="item-formulario">
+                        <label for="c_senha">Senha</label>
+                        <input
+                            type="password"
+                            id="c_senha"
+                            name="c_senha"
+                            placeholder="••••••••"
+                            required
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="btn-criarConta"
+                        id="c_criarConta"
+                    >
+                        Criar conta
+                    </button>
+                </form>
+
+                <a href="{{ url_for('tela_login') }}" class="link-login"
+                    >Já tem uma conta? Faça login</a
+                >
+            </div>
+        </div>
+    </body>
+</html>

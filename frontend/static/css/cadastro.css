@@ -1,0 +1,162 @@
+/* =====================
+   Estilos Gerais
+   ===================== */
+body {
+    align-items: center;
+    display: flex;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+        Cantarell, sans-serif;
+    justify-content: center;
+    padding: 1rem;
+    min-height: 95vh;
+    color: #1f2937;
+    background-color: #f4f4f5;
+}
+
+/* =====================
+   Estrutura Principal
+   ===================== */
+.cadastro-container {
+    max-width: 35rem;
+    width: 100%;
+}
+
+.cartao-cadastro {
+    background-color: #ffffff;
+    border: 2px solid #18181b;
+    border-radius: 0.5rem;
+    box-shadow: 6px 6px 0px #18181b;
+    padding: 2rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.cabecalho-cartao {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.cabecalho-cartao h1 {
+    color: #18181b;
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.cabecalho-cartao p {
+    color: #555;
+    font-size: 0.88rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+/* =====================
+   Formulário
+   ===================== */
+.formulario-cadastro {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.item-formulario {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.itens-linha {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.item-formulario label {
+    font-size: 0.88rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #3f3f46;
+}
+
+.item-formulario select,
+.item-formulario input {
+    border: 2px solid #18181b;
+    border-radius: 0.5rem;
+    background-color: #ffffff;
+    font-size: 1rem;
+    font-family: inherit;
+    padding: 0.88rem 1rem;
+    /* appearance: none; */
+}
+
+.item-formulario select:focus,
+.item-formulario input:focus {
+    outline: none;
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 3px #a78bfa;
+}
+
+.item-formulario input::placeholder {
+    color: #a1a1aa;
+}
+
+/* Remove as setas no Chrome, Safari, Edge e Opera para input type number */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Remove as setas no Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+/* =====================
+   Botões
+   ===================== */
+.btn-criarConta {
+    border: 2px solid #18181b;
+    border-radius: 0.5rem;
+    box-shadow: 4px 4px 0px #18181b;
+    background-color: #fbbf24;
+    color: #18181b;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.88rem 1rem;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.btn-criarConta:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px #18181b;
+}
+
+.cartao-cadastro ul {
+    margin-top: 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.mensagem-validacao {
+    color: #e01616;
+    font-size: 0.88rem;
+    margin-bottom: 0.5rem;
+    margin-left: 1rem;
+    margin-top: 0;
+}
+
+.link-login {
+    color: #1e40af;
+    display: block;
+    font-size: 0.88rem;
+    margin-top: 1.5rem;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.link-login:hover {
+    text-decoration: underline;
+}

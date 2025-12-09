@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Databases
+*.db
+*.sqlite
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+backend/imagens/
+backend/coordenada*/
+backend/*.pkl
+*.exacalidraw.png
+
+# Virtual environments
+*/venv/
+*/env/
+
+# Dependencies
+node_modules/

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Login</title>
+    <meta name="description" content="Tela de Login"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="login-container">
+        <div class="cartao-login">
+
+            <div class="cabecalho-login">
+                <h1>Bem-vindo de volta</h1>
+                <p>Entre com suas credenciais para acessar sua conta</p>
+
+                {% with mensagens = get_flashed_messages() %}
+                    {% if mensagens %}
+                        <ul class="ul-flashed-messages">
+                            {% for mensagem in mensagens %}
+                                <li class="mensagem-validacao">{{ mensagem }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+
+            <form id="loginFormulario" class="login-formulario" autocomplete="off" method="POST">
+                <div class="item-formulario">
+                    <label for="usuario">Nome de usuário</label>
+                    <input type="text" id="usuario" name="usuario" placeholder="Digite o seu nome de usuário" required>
+                </div>
+
+                <div class="item-formulario">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+                </div>
+
+                <button type="submit" class="btn">
+                    Entrar
+                </button>
+
+            </form>
+
+            <div class="divider">
+                <span>ou</span>
+            </div>
+
+            <a href="{{ url_for('tela_cadastro') }}" class="btn btn-criarConta link-criarConta" id="criarConta">
+                Criar conta
+            </a>
+</body>
+</html>
