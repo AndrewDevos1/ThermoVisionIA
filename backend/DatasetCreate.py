@@ -39,7 +39,6 @@ try:
         if not ret:
             print("Falha ao capturar frame.")
             break
-        cv2.imshow('IC3 Intelbras', frame)
 
         # Mostra tempo decorrido e restante
         tempo_atual = time.time()
@@ -60,13 +59,9 @@ try:
             contador += 1
             fotos_tiradas += 1
             tempo_ultima_foto = time.time()
-        # Permite sair com barra de espaço
-        if cv2.waitKey(1) & 0xFF == ord(' '):
-            raise KeyboardInterrupt
     print("\nTempo de captura finalizado (10 minutos).")
 except KeyboardInterrupt:
     print("\nInterrompido pelo usuário.")
 
 # Libera os recursos
 cap.release()
-cv2.destroyAllWindows()
