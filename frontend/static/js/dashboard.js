@@ -660,6 +660,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.exitFullscreen().catch(() => {});
             }
         });
+
+        // Duplo clique para alternar fullscreen
+        videoContainer.addEventListener("dblclick", () => {
+            if (!document.fullscreenElement) {
+                videoContainer.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen().catch(() => {});
+            }
+        });
     }
 
     renderizarCameras();
