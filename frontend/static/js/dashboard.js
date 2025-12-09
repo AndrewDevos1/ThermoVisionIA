@@ -6,8 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const botaoAbrirMenu = document.getElementById("abrir-menu-mobile");
     const botaoFecharMenu = document.getElementById("fechar-menu-mobile");
     const sidebarMobile = document.getElementById("sidebar-mobile");
-    const statusDisplay = document.getElementById("status-display");
-    const selectedCameraSpan = document.getElementById("selected-camera");
     const linksNavegacao = document.querySelectorAll("[data-target]");
     const secDashboard = document.getElementById("sec-dashboard");
     const secStreaming = document.getElementById("sec-streaming");
@@ -35,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let isConnected = false;
     let availableCameras = [];
     let selectedCameraIndex = 0;
-    let selectedCameraLabel = "Nenhuma";
     const viewerCards = [];
     // URL do feed de vídeo do Flask
     const videoFeedUrl = "/video_feed";
@@ -208,82 +205,76 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function travarBotoesConexao(texto = null) {
+        viewerCards.forEach((viewer) => {
+            if (!viewer.connectBtn) return;
+            if (texto) viewer.connectBtn.textContent = texto;
+            viewer.connectBtn.disabled = true;
+            viewer.connectBtn.classList.add("opacity-60", "cursor-not-allowed");
+        });
+    }
+
+    function liberarBotoesConexao() {
+        viewerCards.forEach((viewer) => {
+            if (!viewer.connectBtn) return;
+            viewer.connectBtn.disabled = false;
+            viewer.connectBtn.classList.remove("opacity-60", "cursor-not-allowed");
+        });
+    }
+
     // Função para atualizar o status visual
     function updateStatus(viewer, connected, labelPersonalizado = null) {
         isConnected = connected;
         if (!viewer) return;
-        const { streamImg, disconnectedMsg, connectBtn } = viewer;
+        const { streamImg, disconnectedMsg, connectBtn, statusBadge, selectedLabel } = viewer;
 
         if (connected) {
             streamImg.classList.remove("hidden");
             disconnectedMsg.classList.add("hidden");
-            statusDisplay.textContent = "Conectada";
-            if (viewer.statusBadge) {
-                viewer.statusBadge.textContent = "Conectada";
-                viewer.statusBadge.classList.remove("bg-red-200", "text-red-700", "border-red-700");
-                viewer.statusBadge.classList.add("bg-green-200", "text-green-700", "border-green-700");
+            if (statusBadge) {
+                statusBadge.textContent = "Conectada";
+                statusBadge.classList.remove("bg-red-200", "text-red-700", "border-red-700", "bg-yellow-200", "text-yellow-700", "border-yellow-700");
+                statusBadge.classList.add("bg-green-200", "text-green-700", "border-green-700");
             }
 
-            statusDisplay.classList.remove(
-                "bg-red-200",
-                "text-red-700",
-                "border-red-700",
-                "bg-yellow-200",
-                "text-yellow-700",
-                "border-yellow-700",
-            );
-            statusDisplay.classList.add(
-                "bg-green-200",
-                "text-green-700",
-                "border-green-700",
-            );
+            if (connectBtn) {
+                connectBtn.textContent = "Desconectar Câmera";
+                connectBtn.disabled = false;
+                connectBtn.classList.remove("bg-amber-500", "opacity-60", "cursor-not-allowed");
+                connectBtn.classList.add("bg-gray-500");
+            }
 
-            connectBtn.textContent = "Desconectar Câmera";
-            connectBtn.classList.remove("bg-amber-500");
-            connectBtn.classList.add("bg-gray-500");
-            
+            let label = "Câmera conectada";
             if (labelPersonalizado) {
-                selectedCameraSpan.textContent = labelPersonalizado;
-                selectedCameraLabel = labelPersonalizado;
-                if (viewer.selectedLabel) viewer.selectedLabel.textContent = labelPersonalizado;
+                label = labelPersonalizado;
             } else {
-                const selectedCamera = availableCameras.find(cam => cam.index === selectedCameraIndex);
-                selectedCameraSpan.textContent = selectedCamera ? selectedCamera.name : `Câmera ${selectedCameraIndex}`;
-                selectedCameraLabel = selectedCamera ? selectedCamera.name : `Câmera ${selectedCameraIndex}`;
-                if (viewer.selectedLabel) viewer.selectedLabel.textContent = selectedCameraLabel;
+                const selecionada = availableCameras.find(cam => cam.index === selectedCameraIndex);
+                if (selecionada) {
+                    const res = selecionada.resolution ? ` (${selecionada.resolution})` : "";
+                    label = `${selecionada.name}${res}`;
+                } else {
+                    label = `Câmera ${selectedCameraIndex}`;
+                }
             }
+            if (selectedLabel) selectedLabel.textContent = label;
         } else {
-            streamImg.src = ""; // Limpa a URL do stream
+            streamImg.src = "";
             streamImg.classList.add("hidden");
             disconnectedMsg.classList.remove("hidden");
-            statusDisplay.textContent = "Desconectada";
-            if (viewer.statusBadge) {
-                viewer.statusBadge.textContent = "Desconectada";
-                viewer.statusBadge.classList.remove("bg-green-200", "text-green-700", "border-green-700", "bg-yellow-200", "text-yellow-700", "border-yellow-700");
-                viewer.statusBadge.classList.add("bg-red-200", "text-red-700", "border-red-700");
+            if (statusBadge) {
+                statusBadge.textContent = "Desconectada";
+                statusBadge.classList.remove("bg-green-200", "text-green-700", "border-green-700", "bg-yellow-200", "text-yellow-700", "border-yellow-700");
+                statusBadge.classList.add("bg-red-200", "text-red-700", "border-red-700");
             }
 
-            statusDisplay.classList.remove(
-                "bg-green-200",
-                "text-green-700",
-                "border-green-700",
-                "bg-yellow-200",
-                "text-yellow-700",
-                "border-yellow-700",
-            );
-            statusDisplay.classList.add(
-                "bg-red-200",
-                "text-red-700",
-                "border-red-700",
-            );
+            if (connectBtn) {
+                connectBtn.textContent = "Conectar Câmera";
+                connectBtn.disabled = false;
+                connectBtn.classList.remove("bg-gray-500", "opacity-60", "cursor-not-allowed");
+                connectBtn.classList.add("bg-amber-500");
+            }
 
-            connectBtn.textContent = "Conectar Câmera";
-            connectBtn.classList.remove("bg-gray-500");
-            connectBtn.classList.add("bg-amber-500");
-            
-            selectedCameraSpan.textContent = "Nenhuma";
-            selectedCameraLabel = "Nenhuma";
-            if (viewer.selectedLabel) viewer.selectedLabel.textContent = "Nenhuma";
+            if (selectedLabel) selectedLabel.textContent = "Nenhuma";
         }
     }
 
@@ -298,6 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const fullscreenBtn = cardEl.querySelector(".fullscreen-btn");
         const statusBadge = cardEl.querySelector(".viewer-status");
         const selectedLabel = cardEl.querySelector(".viewer-selected");
+        const removeBtn = cardEl.querySelector(".remove-viewer");
 
         const viewer = { cardEl, select, refreshBtn, connectBtn, streamImg, disconnectedMsg, videoContainer, fullscreenBtn, statusBadge, selectedLabel };
 
@@ -325,9 +317,22 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
+        if (removeBtn) {
+            removeBtn.addEventListener("click", () => {
+                if (viewerCards.length <= 1) {
+                    alert("Mantenha pelo menos uma visualização ativa.");
+                    return;
+                }
+                const idx = viewerCards.indexOf(viewer);
+                if (idx !== -1) viewerCards.splice(idx, 1);
+                cardEl.remove();
+            });
+        }
+
         if (connectBtn && select) {
             connectBtn.addEventListener("click", async () => {
                 if (isConnected) {
+                    travarBotoesConexao("Desconectando...");
                     try {
                         const response = await fetch("/camera/disconnect", {
                             method: "POST",
@@ -357,23 +362,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (selectedValue.startsWith("custom-")) {
                     const idx = parseInt(selectedValue.replace("custom-", ""), 10);
                     const lista = lerCamerasSalvas();
-                    const cam = lista[idx];
-                    if (!cam) {
-                        alert("Câmera customizada não encontrada.");
-                        return;
-                    }
-                    await conectarCameraUrl(cam.url, cam.nome);
-                    viewerCards.forEach(v => {
-                        v.streamImg.src = videoFeedUrl;
-                        updateStatus(v, true, cam.nome);
-                    });
+                const cam = lista[idx];
+                if (!cam) {
+                    alert("Câmera customizada não encontrada.");
                     return;
                 }
+                travarBotoesConexao("Conectando...");
+                await conectarCameraUrl(cam.url, cam.nome);
+                viewerCards.forEach(v => {
+                    v.streamImg.src = videoFeedUrl;
+                    updateStatus(v, true, cam.nome);
+                });
+                liberarBotoesConexao();
+                return;
+            }
 
                 selectedCameraIndex = parseInt(selectedValue);
-                statusDisplay.textContent = "Conectando...";
-                statusDisplay.classList.remove("bg-red-200", "text-red-700", "border-red-700");
-                statusDisplay.classList.add("bg-yellow-200", "text-yellow-700", "border-yellow-700");
+                travarBotoesConexao("Conectando...");
 
                 try {
                     const response = await fetch("/camera/connect", {
@@ -394,10 +399,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.error("Erro ao conectar:", result.message);
                         alert(`Erro ao conectar: ${result.message}`);
                     }
+                    liberarBotoesConexao();
                 } catch (error) {
                     console.error("Erro na requisição de conexão:", error);
                     viewerCards.forEach(v => updateStatus(v, false));
                     alert("Erro ao conectar com a câmera. Verifique se ela está disponível.");
+                    liberarBotoesConexao();
                 }
             });
         }
@@ -465,6 +472,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (result.status === "disconnected" && isConnected) {
                 viewerCards.forEach(v => updateStatus(v, false));
             }
+            liberarBotoesConexao();
         } catch (error) {
             console.error("Erro ao verificar status da câmera:", error);
         }
@@ -569,10 +577,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setBetaFeedback("Informe uma URL RTSP para conectar.", "erro");
             return;
         }
-
-        statusDisplay.textContent = "Conectando...";
-        statusDisplay.classList.remove("bg-red-200", "text-red-700", "border-red-700");
-        statusDisplay.classList.add("bg-yellow-200", "text-yellow-700", "border-yellow-700");
+        travarBotoesConexao("Conectando...");
 
         try {
             const resp = await fetch("/camera/connect", {
