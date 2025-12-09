@@ -391,12 +391,11 @@
                                         vision
                                     </p>
                                 </div>
-                                <button id="fullscreen-btn" class="btn-acao px-3 py-2 bg-gray-200 text-zinc-900 font-bold hover:bg-gray-300">
-                                    Tela cheia
-                                </button>
 
-                                <!-- Seletor de Câmera -->
-                                <div class="mb-4">
+                        <!-- Seletor de Câmera -->
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between gap-3 mb-3">
+                                <div class="flex-1">
                                     <label class="block text-sm font-medium text-gray-700 mb-2">
                                         Selecionar Câmera:
                                     </label>
@@ -409,6 +408,22 @@
                                         </button>
                                     </div>
                                 </div>
+                                <div class="flex flex-col sm:flex-row gap-2 items-start sm:items-center pt-6">
+                                    <button
+                                        id="fullscreen-btn"
+                                        class="btn-acao px-3 py-2 bg-gray-200 text-zinc-900 font-bold hover:bg-gray-300 w-full sm:w-auto"
+                                    >
+                                        Tela cheia
+                                    </button>
+                                    <button
+                                        id="connect-button"
+                                        class="btn-acao px-4 py-2 bg-amber-500 text-zinc-900 font-extrabold hover:bg-amber-600 w-full sm:w-auto"
+                                    >
+                                        Conectar Câmera
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
                                 <!-- Área de Streaming / Placeholder -->
                                 <div
@@ -452,13 +467,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Botão de Ação -->
-                                <button
-                                    id="connect-button"
-                                    class="btn-acao w-full py-3 mt-5 text-lg font-extrabold bg-amber-500 text-zinc-900 focus:outline-none focus:ring-4 focus:ring-amber-500 focus:ring-opacity-50"
-                                >
-                                    Conectar Câmera
-                                </button>
                             </div>
                         </div>
 
