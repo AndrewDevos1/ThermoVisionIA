@@ -17,11 +17,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const linksNavegacao = document.querySelectorAll("[data-target]");
     const secDashboard = document.getElementById("sec-dashboard");
     const secStreaming = document.getElementById("sec-streaming");
+    const secBeta = document.getElementById("sec-beta");
+    const betaNome = document.getElementById("beta-nome");
+    const betaUrl = document.getElementById("beta-url");
+    const betaSalvar = document.getElementById("beta-salvar");
+    const betaTestar = document.getElementById("beta-testar");
+    const betaLista = document.getElementById("beta-lista");
+    const betaFeedback = document.getElementById("beta-feedback");
     let secaoAtual = "dashboard";
 
     let isConnected = false;
     let availableCameras = [];
     let selectedCameraIndex = 0;
+    let selectedCameraLabel = "Nenhuma";
     // URL do feed de vídeo do Flask
     const videoFeedUrl = "/video_feed";
 
@@ -36,26 +44,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function mostrarSecao(alvo) {
-        const destino = alvo === "streaming" ? "streaming" : "dashboard";
-        secaoAtual = destino;
+        const destinoValido = ["dashboard", "streaming", "beta"].includes(alvo) ? alvo : "dashboard";
+        secaoAtual = destinoValido;
 
-        if (secDashboard && secStreaming) {
-            if (destino === "streaming") {
-                secDashboard.classList.add("hidden");
-                secStreaming.classList.remove("hidden");
+        if (secDashboard && secStreaming && secBeta) {
+            secDashboard.classList.toggle("hidden", destinoValido !== "dashboard");
+            secStreaming.classList.toggle("hidden", destinoValido !== "streaming");
+            secBeta.classList.toggle("hidden", destinoValido !== "beta");
+
+            if (destinoValido === "streaming") {
                 if (window.location.hash !== "#streaming") {
                     window.location.hash = "streaming";
                 }
+            } else if (destinoValido === "beta") {
+                if (window.location.hash !== "#beta") {
+                    window.location.hash = "beta";
+                }
             } else {
-                secDashboard.classList.remove("hidden");
-                secStreaming.classList.add("hidden");
                 if (window.location.hash) {
                     history.replaceState(null, "", window.location.pathname);
                 }
             }
         }
 
-        destacarLinkAtivo(destino);
+        destacarLinkAtivo(destinoValido);
     }
 
     function abrirMenuMobile() {
@@ -97,10 +109,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    const hashInicial = window.location.hash === "#streaming" ? "streaming" : "dashboard";
+    const hashInicial = window.location.hash === "#streaming"
+        ? "streaming"
+        : window.location.hash === "#beta"
+            ? "beta"
+            : "dashboard";
     mostrarSecao(hashInicial);
     window.addEventListener("hashchange", () => {
-        const alvo = window.location.hash === "#streaming" ? "streaming" : "dashboard";
+        const alvo = window.location.hash === "#streaming"
+            ? "streaming"
+            : window.location.hash === "#beta"
+                ? "beta"
+                : "dashboard";
         mostrarSecao(alvo);
     });
 
@@ -142,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Função para atualizar o status visual
-    function updateStatus(connected) {
+    function updateStatus(connected, labelPersonalizado = null) {
         isConnected = connected;
         if (connected) {
             // Conectado
@@ -169,8 +189,14 @@ document.addEventListener('DOMContentLoaded', function() {
             connectButton.classList.add("bg-gray-500");
             
             // Atualiza informação da câmera selecionada
-            const selectedCamera = availableCameras.find(cam => cam.index === selectedCameraIndex);
-            selectedCameraSpan.textContent = selectedCamera ? selectedCamera.name : `Câmera ${selectedCameraIndex}`;
+            if (labelPersonalizado) {
+                selectedCameraSpan.textContent = labelPersonalizado;
+                selectedCameraLabel = labelPersonalizado;
+            } else {
+                const selectedCamera = availableCameras.find(cam => cam.index === selectedCameraIndex);
+                selectedCameraSpan.textContent = selectedCamera ? selectedCamera.name : `Câmera ${selectedCameraIndex}`;
+                selectedCameraLabel = selectedCamera ? selectedCamera.name : `Câmera ${selectedCameraIndex}`;
+            }
         } else {
             // Desconectado
             cameraStreamImg.src = ""; // Limpa a URL do stream
@@ -197,6 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
             connectButton.classList.add("bg-amber-500");
             
             selectedCameraSpan.textContent = "Nenhuma";
+            selectedCameraLabel = "Nenhuma";
         }
     }
 
@@ -320,6 +347,183 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Verifica status da câmera a cada 5 segundos
     setInterval(checkCameraStatus, 5000);
+
+    // ----------------------------
+    // Beta Test - câmeras customizadas
+    // ----------------------------
+    const LS_KEY_BETA = "thermo_beta_cameras";
+
+    function setBetaFeedback(mensagem, tipo = "info") {
+        if (!betaFeedback) return;
+        const cores = {
+            info: "text-gray-700",
+            ok: "text-green-700",
+            erro: "text-red-700",
+        };
+        betaFeedback.className = `text-sm ${cores[tipo] || cores.info}`;
+        betaFeedback.textContent = mensagem;
+    }
+
+    function lerCamerasSalvas() {
+        try {
+            const salvo = localStorage.getItem(LS_KEY_BETA);
+            if (!salvo) return [];
+            return JSON.parse(salvo);
+        } catch (e) {
+            console.error("Erro ao ler câmeras salvas:", e);
+            return [];
+        }
+    }
+
+    function salvarCameras(lista) {
+        localStorage.setItem(LS_KEY_BETA, JSON.stringify(lista));
+    }
+
+    function renderizarCameras() {
+        if (!betaLista) return;
+        const lista = lerCamerasSalvas();
+        if (lista.length === 0) {
+            betaLista.innerHTML = '<p class="text-gray-500">Nenhuma câmera cadastrada ainda.</p>';
+            return;
+        }
+
+        betaLista.innerHTML = "";
+        lista.forEach((cam, idx) => {
+            const linha = document.createElement("div");
+            linha.className = "p-3 border border-gray-200 rounded-lg bg-white flex flex-col gap-2";
+            linha.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="font-semibold">${cam.nome || "Sem nome"}</p>
+                        <p class="text-xs text-gray-500 break-all">${cam.url}</p>
+                    </div>
+                    <span class="text-[11px] text-gray-500">#${idx + 1}</span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button class="btn-acao px-3 py-2 bg-blue-500 text-white hover:bg-blue-600" data-acao="usar" data-idx="${idx}">Usar no streaming</button>
+                    <button class="btn-acao px-3 py-2 bg-gray-200 text-zinc-900 hover:bg-gray-300" data-acao="testar" data-idx="${idx}">Testar</button>
+                    <button class="btn-acao px-3 py-2 bg-red-500 text-white hover:bg-red-600" data-acao="remover" data-idx="${idx}">Remover</button>
+                </div>
+            `;
+            betaLista.appendChild(linha);
+        });
+    }
+
+    async function testarCameraUrl(url) {
+        if (!url) {
+            setBetaFeedback("Informe uma URL RTSP para testar.", "erro");
+            return;
+        }
+        setBetaFeedback("Testando conexão...", "info");
+        try {
+            const resp = await fetch("/camera/test", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ camera_url: url }),
+            });
+            const result = await resp.json();
+            if (result.success) {
+                setBetaFeedback(result.message || "Conexão OK.", "ok");
+            } else {
+                setBetaFeedback(result.message || "Falha ao testar conexão.", "erro");
+            }
+        } catch (e) {
+            console.error(e);
+            setBetaFeedback("Erro ao testar conexão.", "erro");
+        }
+    }
+
+    async function conectarCameraUrl(url, nomeExibicao) {
+        if (!url) {
+            setBetaFeedback("Informe uma URL RTSP para conectar.", "erro");
+            return;
+        }
+
+        statusDisplay.textContent = "Conectando...";
+        statusDisplay.classList.remove("bg-red-200", "text-red-700", "border-red-700");
+        statusDisplay.classList.add("bg-yellow-200", "text-yellow-700", "border-yellow-700");
+
+        try {
+            const resp = await fetch("/camera/connect", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ camera_url: url }),
+            });
+            const result = await resp.json();
+            if (result.success) {
+                cameraStreamImg.src = videoFeedUrl;
+                selectedCameraIndex = -1;
+                setTimeout(() => {
+                    updateStatus(true, nomeExibicao || "RTSP customizado");
+                    console.log("Câmera custom conectada:", result.message);
+                }, 500);
+                setBetaFeedback(result.message || "Conectado com sucesso.", "ok");
+            } else {
+                updateStatus(false);
+                setBetaFeedback(result.message || "Falha ao conectar.", "erro");
+            }
+        } catch (e) {
+            console.error(e);
+            updateStatus(false);
+            setBetaFeedback("Erro ao conectar.", "erro");
+        }
+    }
+
+    function removerCamera(idx) {
+        const lista = lerCamerasSalvas();
+        const nova = lista.filter((_, i) => i !== idx);
+        salvarCameras(nova);
+        renderizarCameras();
+        setBetaFeedback("Câmera removida.", "info");
+    }
+
+    if (betaSalvar) {
+        betaSalvar.addEventListener("click", (e) => {
+            e.preventDefault();
+            const nome = betaNome.value.trim();
+            const url = betaUrl.value.trim();
+            if (!url) {
+                setBetaFeedback("Preencha a URL RTSP para salvar.", "erro");
+                return;
+            }
+            const lista = lerCamerasSalvas();
+            lista.push({ nome: nome || "Sem nome", url });
+            salvarCameras(lista);
+            renderizarCameras();
+            setBetaFeedback("Câmera salva localmente.", "ok");
+        });
+    }
+
+    if (betaTestar) {
+        betaTestar.addEventListener("click", (e) => {
+            e.preventDefault();
+            const url = betaUrl.value.trim();
+            testarCameraUrl(url);
+        });
+    }
+
+    if (betaLista) {
+        betaLista.addEventListener("click", (e) => {
+            const botao = e.target.closest("button");
+            if (!botao) return;
+            const acao = botao.dataset.acao;
+            const idx = parseInt(botao.dataset.idx, 10);
+            const lista = lerCamerasSalvas();
+            const cam = lista[idx];
+            if (!cam) return;
+
+            if (acao === "usar") {
+                conectarCameraUrl(cam.url, cam.nome);
+            } else if (acao === "testar") {
+                testarCameraUrl(cam.url);
+            } else if (acao === "remover") {
+                removerCamera(idx);
+            }
+        });
+    }
+
+    renderizarCameras();
+    // ----------------------------
 
     // Inicialização
     loadAvailableCameras();

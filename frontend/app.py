@@ -241,6 +241,7 @@ def connect_camera():
         # Obtém o índice da câmera do JSON da requisição
         data = request.get_json()
         camera_index = data.get("camera_index", 0) if data else 0
+        camera_url = data.get("camera_url") if data else None
 
         # Desconecta câmera atual se estiver conectada
         if camera is not None:
@@ -248,6 +249,23 @@ def connect_camera():
             camera = None
 
         # Modo DEMO: conecta ao vídeo demo
+        # Se foi informado URL customizada, prioriza ela
+        if camera_url:
+            camera = cv2.VideoCapture(camera_url)
+            if camera.isOpened():
+                selected_camera_index = -1
+                return jsonify({
+                    "success": True,
+                    "message": "Câmera RTSP conectada com sucesso",
+                    "camera_index": -1,
+                    "camera_url": camera_url,
+                })
+            else:
+                return jsonify({
+                    "success": False,
+                    "message": "Não foi possível conectar à URL informada",
+                })
+
         if DEMO_MODE:
             camera = cv2.VideoCapture(DEMO_VIDEO_PATH)
             if camera.isOpened():
@@ -286,6 +304,27 @@ def connect_camera():
         return jsonify(
             {"success": False, "message": f"Erro ao conectar câmera: {str(e)}"}
         )
+
+
+@app.route("/camera/test", methods=["POST"])
+def test_camera():
+    """Testa conexão com câmera (por índice ou URL RTSP) sem alterar estado global."""
+    data = request.get_json() or {}
+    camera_url = data.get("camera_url")
+    camera_index = data.get("camera_index", 0)
+    alvo = camera_url if camera_url else camera_index
+
+    cap = cv2.VideoCapture(alvo)
+    ok = cap.isOpened()
+    if ok:
+        # tenta ler um frame para validar
+        ret, _ = cap.read()
+        ok = ret
+    cap.release()
+
+    if ok:
+        return jsonify({"success": True, "message": "Conexão bem-sucedida."})
+    return jsonify({"success": False, "message": "Falha ao abrir câmera/URL."})
 
 
 @app.route("/camera/disconnect", methods=["POST"])
