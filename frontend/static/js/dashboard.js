@@ -162,7 +162,8 @@ document.addEventListener('DOMContentLoaded', function() {
             availableCameras.forEach(camera => {
                 const option = document.createElement('option');
                 option.value = camera.index;
-                option.textContent = `${camera.name} (${camera.resolution})`;
+                const labelRes = camera.resolution ? ` (${camera.resolution})` : "";
+                option.textContent = `${camera.name}${labelRes}`;
                 cameraSelect.appendChild(option);
             });
         }
