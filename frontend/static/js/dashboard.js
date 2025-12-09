@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const refreshCamerasButton = document.getElementById("refresh-cameras");
     const selectedCameraSpan = document.getElementById("selected-camera");
     const fullscreenBtn = document.getElementById("fullscreen-btn");
+    const openAdd = document.getElementById("open-add");
     const linksNavegacao = document.querySelectorAll("[data-target]");
     const secDashboard = document.getElementById("sec-dashboard");
     const secStreaming = document.getElementById("sec-streaming");
@@ -648,6 +649,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (addLocalRefresh) {
         addLocalRefresh.addEventListener("click", () => {
             loadAvailableCameras();
+        });
+    }
+
+    if (openAdd) {
+        openAdd.addEventListener("click", (e) => {
+            e.preventDefault();
+            mostrarSecao("add");
+            window.scrollTo({ top: 0, behavior: "smooth" });
         });
     }
 
