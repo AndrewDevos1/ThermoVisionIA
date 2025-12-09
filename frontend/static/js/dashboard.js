@@ -218,6 +218,11 @@ document.addEventListener('DOMContentLoaded', function() {
             streamImg.classList.remove("hidden");
             disconnectedMsg.classList.add("hidden");
             statusDisplay.textContent = "Conectada";
+            if (viewer.statusBadge) {
+                viewer.statusBadge.textContent = "Conectada";
+                viewer.statusBadge.classList.remove("bg-red-200", "text-red-700", "border-red-700");
+                viewer.statusBadge.classList.add("bg-green-200", "text-green-700", "border-green-700");
+            }
 
             statusDisplay.classList.remove(
                 "bg-red-200",
@@ -240,16 +245,23 @@ document.addEventListener('DOMContentLoaded', function() {
             if (labelPersonalizado) {
                 selectedCameraSpan.textContent = labelPersonalizado;
                 selectedCameraLabel = labelPersonalizado;
+                if (viewer.selectedLabel) viewer.selectedLabel.textContent = labelPersonalizado;
             } else {
                 const selectedCamera = availableCameras.find(cam => cam.index === selectedCameraIndex);
                 selectedCameraSpan.textContent = selectedCamera ? selectedCamera.name : `Câmera ${selectedCameraIndex}`;
                 selectedCameraLabel = selectedCamera ? selectedCamera.name : `Câmera ${selectedCameraIndex}`;
+                if (viewer.selectedLabel) viewer.selectedLabel.textContent = selectedCameraLabel;
             }
         } else {
             streamImg.src = ""; // Limpa a URL do stream
             streamImg.classList.add("hidden");
             disconnectedMsg.classList.remove("hidden");
             statusDisplay.textContent = "Desconectada";
+            if (viewer.statusBadge) {
+                viewer.statusBadge.textContent = "Desconectada";
+                viewer.statusBadge.classList.remove("bg-green-200", "text-green-700", "border-green-700", "bg-yellow-200", "text-yellow-700", "border-yellow-700");
+                viewer.statusBadge.classList.add("bg-red-200", "text-red-700", "border-red-700");
+            }
 
             statusDisplay.classList.remove(
                 "bg-green-200",
@@ -271,6 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             selectedCameraSpan.textContent = "Nenhuma";
             selectedCameraLabel = "Nenhuma";
+            if (viewer.selectedLabel) viewer.selectedLabel.textContent = "Nenhuma";
         }
     }
 
@@ -283,8 +296,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const disconnectedMsg = cardEl.querySelector(".disconnected-message");
         const videoContainer = cardEl.querySelector(".video-container");
         const fullscreenBtn = cardEl.querySelector(".fullscreen-btn");
+        const statusBadge = cardEl.querySelector(".viewer-status");
+        const selectedLabel = cardEl.querySelector(".viewer-selected");
 
-        const viewer = { cardEl, select, refreshBtn, connectBtn, streamImg, disconnectedMsg, videoContainer, fullscreenBtn };
+        const viewer = { cardEl, select, refreshBtn, connectBtn, streamImg, disconnectedMsg, videoContainer, fullscreenBtn, statusBadge, selectedLabel };
 
         if (refreshBtn) {
             refreshBtn.addEventListener("click", () => {
@@ -421,6 +436,15 @@ document.addEventListener('DOMContentLoaded', function() {
             if (select) {
                 select.innerHTML = '<option value="">Carregando câmeras...</option>';
             }
+            const statusB = clone.querySelector(".viewer-status");
+            if (statusB) {
+                statusB.textContent = "Desconectada";
+                statusB.classList.remove("bg-green-200", "text-green-700", "border-green-700", "bg-yellow-200", "text-yellow-700", "border-yellow-700");
+                statusB.classList.add("bg-red-200", "text-red-700", "border-red-700");
+            }
+            const selectedLbl = clone.querySelector(".viewer-selected");
+            if (selectedLbl) selectedLbl.textContent = "Nenhuma";
+
             streamingList.appendChild(clone);
             criarViewer(clone);
             updateAllSelects();
@@ -700,5 +724,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Inicialização
     loadAvailableCameras();
-    updateStatus(false);
+    viewerCards.forEach(v => updateStatus(v, false));
 });
