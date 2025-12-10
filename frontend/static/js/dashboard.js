@@ -255,6 +255,14 @@ document.addEventListener('DOMContentLoaded', function() {
             .filter((v) => v.length > 0);
     }
 
+    function parseRois(texto) {
+        if (!texto) return [];
+        return texto
+            .split(/\n/)
+            .map((v) => v.trim())
+            .filter((v) => v.length > 0);
+    }
+
     function montarParamsScript(viewer, script) {
         const params = obterParamsCamera(viewer);
         if (viewer && viewer.outputDirInput) {
@@ -276,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const displayEl = card.querySelector(".cut-display-width");
                 if (imgEl && imgEl.value.trim()) params.input_image = imgEl.value.trim();
                 if (roiEl && roiEl.value.trim()) {
-                    const lista = parseLista(roiEl.value);
+                    const lista = parseRois(roiEl.value);
                     if (lista.length > 0) params.roi = lista;
                 }
                 if (interactiveEl) params.interactive = interactiveEl.checked;
