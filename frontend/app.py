@@ -596,14 +596,14 @@ def parar_script():
 # ----------------------------
 def coletar_imagens(limit: int = 80):
     """Percorre pastas padrÇøes (imagens/ e coordenada*) e retorna lista de arquivos de imagem."""
-    candidatos = {"imagens"}
+    candidatos = {Path("imagens"), Path("backend/Imagens de teste")}
     for pasta in ROOT_DIR.glob("coordenada*"):
         if pasta.is_dir():
-            candidatos.add(pasta.name)
+            candidatos.add(Path(pasta.name))
 
     pastas = []
-    for nome in sorted(candidatos):
-        dir_path = ROOT_DIR / nome
+    for rel_dir in sorted(candidatos):
+        dir_path = ROOT_DIR / rel_dir
         if not dir_path.exists() or not dir_path.is_dir():
             continue
         arquivos = [
@@ -628,7 +628,7 @@ def coletar_imagens(limit: int = 80):
             )
         pastas.append(
             {
-                "name": nome,
+                "name": rel_dir.as_posix(),
                 "path": str(dir_path.relative_to(ROOT_DIR)).replace("\\", "/"),
                 "total": total,
                 "files": arquivos_json,
