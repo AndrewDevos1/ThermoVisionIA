@@ -41,6 +41,7 @@ def main():
     parser.add_argument("--output_dir", "--output-dir", type=str, default="imagens", help="Diretorio de saida para fotos.")
     parser.add_argument("--intervalo", type=int, default=30, help="Intervalo entre fotos (s).")
     parser.add_argument("--duracao", type=int, default=600, help="Duracao total da captura (s).")
+    parser.add_argument("--total_fotos", type=int, default=0, help="Quantidade total de fotos (se >0, ignora duracao).")
     parser.add_argument("--coords", type=str, default="", help="Arquivo pickle com coordenadas (recortes.pkl) para salvar recortes.")
     parser.add_argument("--crop_dir", "--crop-dir", type=str, default="", help="Pasta base para salvar recortes (padrao: output_dir).")
     args = parser.parse_args()
@@ -56,7 +57,10 @@ def main():
     contador = proximo_indice(args.output_dir)
 
     intervalo = max(1, args.intervalo)
-    total_fotos = max(1, args.duracao // intervalo)
+    if args.total_fotos and args.total_fotos > 0:
+        total_fotos = args.total_fotos
+    else:
+        total_fotos = max(1, args.duracao // intervalo)
 
     coords = []
     crop_base = ""

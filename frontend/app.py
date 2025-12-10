@@ -13,7 +13,7 @@ import time
 import cv2
 from functools import wraps
 
-from services.manipular_database_sqlite import criar_usuario, verificar_login, listar_usuarios
+from services.manipular_database_sqlite import criar_usuario, verificar_login, listar_usuarios, atualizar_usuario
 from utils.validacoes import (
     validar_email,
     validar_senha,
@@ -396,6 +396,7 @@ def executar_script():
             "output_dir",
             "intervalo",
             "duracao",
+            "total_fotos",
             "coords",
             "crop_dir",
         },

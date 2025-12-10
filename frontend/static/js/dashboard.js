@@ -349,8 +349,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             }
             case "DatasetCreate.py": {
+                const intervaloEl = card.querySelector(".ds-create-intervalo");
+                const duracaoEl = card.querySelector(".ds-create-duracao");
+                const totalEl = card.querySelector(".ds-create-total");
                 const coordsEl = card.querySelector(".ds-create-coords");
                 const cropDirEl = card.querySelector(".ds-create-crop-dir");
+                const intervaloVal = intervaloEl ? parseNumero(intervaloEl.value) : null;
+                if (intervaloVal) params.intervalo = intervaloVal;
+                const durMin = duracaoEl ? parseNumero(duracaoEl.value) : null;
+                if (durMin) params.duracao = durMin * 60;
+                const totalVal = totalEl ? parseNumero(totalEl.value) : null;
+                if (totalVal) params.total_fotos = totalVal;
                 if (coordsEl && coordsEl.value.trim()) params.coords = coordsEl.value.trim();
                 if (cropDirEl && cropDirEl.value.trim()) params.crop_dir = cropDirEl.value.trim();
                 break;
@@ -564,6 +573,20 @@ document.addEventListener('DOMContentLoaded', function() {
             case "DatasetCreate.py":
                 html = `
                     <div class="text-xs text-gray-600">Campos para DatasetCreate (captura + recortes opcionais)</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Intervalo entre capturas (s)</label>
+                            <input type="number" min="1" class="ds-create-intervalo ${baseClass}" placeholder="30" value="30">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Duração total (minutos)</label>
+                            <input type="number" min="1" class="ds-create-duracao ${baseClass}" placeholder="10" value="10">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Total de fotos (opcional)</label>
+                            <input type="number" min="1" class="ds-create-total ${baseClass}" placeholder="0 = usar duração">
+                        </div>
+                    </div>
                     <div>
                         <label class="text-xs font-semibold text-gray-700">Arquivo de coordenadas (recortes.pkl)</label>
                         <input type="text" class="ds-create-coords ${baseClass}" placeholder="recortes.pkl" value="recortes.pkl">

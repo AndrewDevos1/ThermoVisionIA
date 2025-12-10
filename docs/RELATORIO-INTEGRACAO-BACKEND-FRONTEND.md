@@ -39,6 +39,11 @@ total_fotos = 30 * 60 // intervalo  # 10 minutos
 - ✅ Visualização em tempo real do progresso
 - ✅ Controle start/stop da captura
 
+**Status na branch `funcoes-avancadas`:**
+- Painel exp?e DatasetCreate com intervalo (s), dura??o (min), total de fotos (prioriza), pasta de sa?da e recortes via `recortes.pkl` + `crop_dir`.
+- Backend aceita `--total_fotos` (prioriza dura??o) e mant?m recortes quando `coords` ? fornecido.
+
+
 ---
 
 ### **2. DatasetCut.py** - Seleção de ROI (Região de Interesse)
@@ -543,6 +548,14 @@ UPLOAD_FOLDER=uploads/
 MAX_CONTENT_LENGTH=50MB
 REDIS_URL=redis://localhost:6379/0
 ```
+
+
+## Status atual do painel (branch `funcoes-avancadas`)
+- DatasetCreate.py: painel exp?e intervalo (s), dura??o (min), total de fotos (prioriza), pasta de sa?da e recortes via `recortes.pkl` + `crop_dir`.
+- DatasetCut.py: aceita imagem de refer?ncia, ROIs (lista ou canvas), modo interativo/quantidade, preview, salvar recortes e largura de exibi??o.
+- DatasetFilter.py: permite pasta ou lista de arquivos, brilho, adaptive block size/C, Canny low/high e pasta de sa?da.
+- DatasetFilterApliqued.py: pasta de entrada, par?metros do adaptive e Canny e pasta de sa?da.
+- DatasetFilterCut.py: arquivo de coordenadas, lista de pastas de entrada e pasta de sa?da para os recortes.
 
 ---
 
