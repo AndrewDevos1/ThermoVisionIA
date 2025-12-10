@@ -654,6 +654,44 @@ def usuarios_sugeridos():
         return jsonify({"success": False, "message": f"Erro ao listar usuarios: {exc}"}), 500
 
 
+@app.route("/logout", methods=["POST"])
+def logout():
+    """Limpa a sessao e volta para login."""
+    session.pop("usuario", None)
+    return redirect(url_for("tela_login"))
+
+
+@app.route("/perfil", methods=["GET", "POST"])
+@login_required
+def perfil():
+    dados_sessao = session.get("usuario")
+    if not dados_sessao:
+        return redirect(url_for("tela_login"))
+    user_id = dados_sessao[0]
+    nome_atual = dados_sessao[1]
+    mensagem = ""
+
+    if request.method == "POST":
+        novo_nome = request.form.get("novo_nome", "").strip()
+        nova_senha = request.form.get("nova_senha", "").strip()
+        if not novo_nome and not nova_senha:
+            mensagem = "Informe um novo nome e/ou nova senha."
+        else:
+            atualizado = atualizar_usuario(user_id, novo_nome or None, nova_senha or None)
+            if atualizado:
+                dados = list(dados_sessao)
+                if novo_nome:
+                    dados[1] = novo_nome
+                if nova_senha:
+                    dados[4] = nova_senha
+                session["usuario"] = tuple(dados)
+                mensagem = "Perfil atualizado com sucesso."
+            else:
+                mensagem = "Não foi possível atualizar o perfil."
+
+    return render_template("perfil.html", nome_atual=nome_atual, mensagem=mensagem)
+
+
 @app.route("/dashboard")
 @login_required
 def dashboard():

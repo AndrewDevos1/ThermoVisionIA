@@ -1,0 +1,42 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editar Perfil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-gray-50">
+    <div class="login-container">
+        <div class="cartao-login">
+            <div class="cabecalho-login">
+                <h1>Editar Perfil</h1>
+                <p>Atualize seu nome de usuário e senha</p>
+                {% if mensagem %}
+                    <div class="mensagem-validacao" style="color: #166534;">{{ mensagem }}</div>
+                {% endif %}
+            </div>
+            <form method="POST" class="login-formulario">
+                <div class="item-formulario">
+                    <label>Nome atual</label>
+                    <input type="text" value="{{ nome_atual }}" disabled>
+                </div>
+                <div class="item-formulario">
+                    <label for="novo_nome">Novo nome de usuário</label>
+                    <input type="text" id="novo_nome" name="novo_nome" placeholder="Digite o novo nome">
+                </div>
+                <div class="item-formulario">
+                    <label for="nova_senha">Nova senha</label>
+                    <input type="password" id="nova_senha" name="nova_senha" placeholder="Digite a nova senha">
+                </div>
+                <button type="submit" class="btn">Salvar alterações</button>
+            </form>
+            <div class="divider"><span>ou</span></div>
+            <form action="{{ url_for('logout') }}" method="POST">
+                <button type="submit" class="btn btn-criarConta">Sair</button>
+            </form>
+            <a href="{{ url_for('dashboard') }}" class="link-login">Voltar ao dashboard</a>
+        </div>
+    </div>
+</body>
+</html>
