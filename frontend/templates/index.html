@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página de Login</title>
+    <title>Pagina de Login</title>
     <meta name="description" content="Tela de Login"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
@@ -20,7 +20,7 @@
                 {% with mensagens = get_flashed_messages() %}
                     {% if mensagens %}
                         <ul class="ul-flashed-messages">
-                            {% for mensagem in mensagens %}
+                    {% for mensagem in mensagens %}
                                 <li class="mensagem-validacao">{{ mensagem }}</li>
                             {% endfor %}
                         </ul>
