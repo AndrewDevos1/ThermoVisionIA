@@ -20,7 +20,7 @@
                 {% with mensagens = get_flashed_messages() %}
                     {% if mensagens %}
                         <ul class="ul-flashed-messages">
-                            {% for mensagem in mensagens %}
+                    {% for mensagem in mensagens %}
                                 <li class="mensagem-validacao">{{ mensagem }}</li>
                             {% endfor %}
                         </ul>
@@ -31,8 +31,8 @@
 
             <form id="loginFormulario" class="login-formulario" autocomplete="off" method="POST">
                 <div class="item-formulario">
-                    <label for="usuario">Nome de usuario</label>
-                    <input type="text" id="usuario" name="usuario" placeholder="Digite o seu nome de usuario" required>
+                    <label for="usuario">Nome de usuário</label>
+                    <input type="text" id="usuario" name="usuario" placeholder="Digite o seu nome de usuário" required>
                 </div>
 
                 <div class="item-formulario">
