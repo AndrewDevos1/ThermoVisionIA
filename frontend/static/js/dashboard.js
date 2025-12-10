@@ -28,6 +28,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const addLocalRefresh = document.getElementById("add-local-refresh");
     const streamingList = document.getElementById("streaming-list");
     const addViewerBtn = document.getElementById("add-viewer");
+    const historicoModal = document.getElementById("historico-modal");
+    const historicoFechar = document.getElementById("historico-fechar");
+    const historicoDirs = document.getElementById("historico-dirs");
+    const historicoGrid = document.getElementById("historico-grid");
+    const historicoDirLabel = document.getElementById("historico-dir-label");
+    const historicoTotal = document.getElementById("historico-total");
+    let historicoDados = [];
+    let historicoSelecionado = null;
     let secaoAtual = "dashboard";
 
     let isConnected = false;
@@ -261,6 +269,96 @@ document.addEventListener('DOMContentLoaded', function() {
             .split(/\n/)
             .map((v) => v.trim())
             .filter((v) => v.length > 0);
+    }
+
+    // ----------------------------
+    // HistÓrico de imagens (galeria)
+    // ----------------------------
+    function fecharHistorico() {
+        if (historicoModal) historicoModal.classList.add("hidden");
+    }
+
+    function selecionarPastaHistorico(nome) {
+        if (!historicoGrid || !historicoDados) return;
+        historicoSelecionado = nome;
+        const dir = historicoDados.find((d) => d.name === nome);
+        if (!dir) return;
+        if (historicoDirLabel) historicoDirLabel.textContent = `${dir.name} (${dir.path})`;
+        if (historicoTotal) historicoTotal.textContent = `Total: ${dir.total}`;
+
+        if (dir.files.length === 0) {
+            historicoGrid.innerHTML = '<div class="text-sm text-gray-500">Nenhuma imagem nesta pasta.</div>';
+            return;
+        }
+
+        historicoGrid.innerHTML = "";
+        dir.files.forEach((file) => {
+            const card = document.createElement("div");
+            card.className = "border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm";
+            const img = document.createElement("img");
+            img.loading = "lazy";
+            img.src = `/historico/file?path=${encodeURIComponent(file.rel_path)}`;
+            img.alt = file.name;
+            img.className = "w-full h-28 object-cover bg-gray-100";
+            const info = document.createElement("div");
+            info.className = "p-2";
+            info.innerHTML = `<p class="text-xs font-semibold text-gray-800 truncate" title="${file.name}">${file.name}</p><p class="text-[11px] text-gray-500 truncate" title="${file.rel_path}">${file.rel_path}</p>`;
+            card.appendChild(img);
+            card.appendChild(info);
+            historicoGrid.appendChild(card);
+        });
+    }
+
+    function renderHistorico(dados) {
+        historicoDados = dados || [];
+        if (!historicoDirs) return;
+        if (historicoDados.length === 0) {
+            historicoDirs.innerHTML = '<div class="text-sm text-gray-500">Nenhuma pasta encontrada.</div>';
+            if (historicoGrid) historicoGrid.innerHTML = "";
+            return;
+        }
+        historicoDirs.innerHTML = "";
+        historicoDados.forEach((dir) => {
+            const btn = document.createElement("button");
+            const ativo = historicoSelecionado === dir.name;
+            btn.className = `w-full text-left px-3 py-2 rounded-lg border ${ativo ? "bg-blue-100 border-blue-400 text-blue-800" : "bg-white hover:bg-gray-100 border-gray-200 text-gray-800"} text-sm`;
+            btn.textContent = `${dir.name} (${dir.total})`;
+            btn.addEventListener("click", () => selecionarPastaHistorico(dir.name));
+            historicoDirs.appendChild(btn);
+        });
+        const primeira = historicoSelecionado || historicoDados[0].name;
+        selecionarPastaHistorico(primeira);
+    }
+
+    async function carregarHistorico() {
+        try {
+            const resp = await fetch("/historico/list");
+            const result = await resp.json();
+            if (!result.success) {
+                alert(result.message || "Falha ao carregar histÓrico.");
+                return;
+            }
+            historicoSelecionado = null;
+            renderHistorico(result.dirs || []);
+        } catch (e) {
+            console.error(e);
+            alert("Erro ao carregar histÓrico.");
+        }
+    }
+
+    function abrirHistorico() {
+        if (!historicoModal) return;
+        historicoModal.classList.remove("hidden");
+        carregarHistorico();
+    }
+
+    if (historicoFechar) {
+        historicoFechar.addEventListener("click", fecharHistorico);
+    }
+    if (historicoModal) {
+        historicoModal.addEventListener("click", (ev) => {
+            if (ev.target === historicoModal) fecharHistorico();
+        });
     }
 
     function montarParamsScript(viewer, script) {
@@ -776,6 +874,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const downloadLogBtn = cardEl.querySelector(".download-log");
         const pararScriptBtn = cardEl.querySelector(".parar-script");
         const outputDirInput = cardEl.querySelector(".output-dir-input");
+        const historicoBtn = cardEl.querySelector(".btn-ver-historico");
         const dynamicFieldsContainer = (() => {
             const existente = cardEl.querySelector(".script-dynamic-fields");
             if (existente) {
@@ -840,6 +939,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (refreshScriptsBtn) {
             refreshScriptsBtn.addEventListener("click", () => {
                 loadScripts();
+            });
+        }
+
+        if (historicoBtn) {
+            historicoBtn.addEventListener("click", (ev) => {
+                ev.preventDefault();
+                abrirHistorico();
             });
         }
 

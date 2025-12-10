@@ -8,6 +8,7 @@ from flask import (
     session,
     Response,
     jsonify,
+    send_file,
 )
 import time
 import cv2
@@ -42,6 +43,8 @@ processos = {}
 # Modo demo
 DEMO_MODE = config.MODE == "demo"
 DEMO_VIDEO_PATH = config.DEMO_VIDEO_PATH
+ROOT_DIR = Path(__file__).resolve().parent.parent
+ALLOWED_IMG_EXT = {".jpg", ".jpeg", ".png", ".bmp"}
 
 
 def login_required(f):
@@ -586,6 +589,89 @@ def parar_script():
             return jsonify({"success": False, "message": f"Erro ao interromper: {e}"}), 500
     else:
         return jsonify({"success": False, "message": "Processo já finalizado."})
+
+
+# ----------------------------
+# HistÇürico de imagens (galeria)
+# ----------------------------
+def coletar_imagens(limit: int = 80):
+    """Percorre pastas padrÇøes (imagens/ e coordenada*) e retorna lista de arquivos de imagem."""
+    candidatos = {"imagens"}
+    for pasta in ROOT_DIR.glob("coordenada*"):
+        if pasta.is_dir():
+            candidatos.add(pasta.name)
+
+    pastas = []
+    for nome in sorted(candidatos):
+        dir_path = ROOT_DIR / nome
+        if not dir_path.exists() or not dir_path.is_dir():
+            continue
+        arquivos = [
+            arq
+            for arq in dir_path.rglob("*")
+            if arq.is_file() and arq.suffix.lower() in ALLOWED_IMG_EXT
+        ]
+        arquivos.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+        total = len(arquivos)
+        subset = arquivos[:limit]
+        arquivos_json = []
+        for arq in subset:
+            rel = arq.relative_to(ROOT_DIR)
+            stat = arq.stat()
+            arquivos_json.append(
+                {
+                    "name": arq.name,
+                    "rel_path": str(rel).replace("\\", "/"),
+                    "size": stat.st_size,
+                    "mtime": stat.st_mtime,
+                }
+            )
+        pastas.append(
+            {
+                "name": nome,
+                "path": str(dir_path.relative_to(ROOT_DIR)).replace("\\", "/"),
+                "total": total,
+                "files": arquivos_json,
+            }
+        )
+    return pastas
+
+
+@app.route("/historico/list", methods=["GET"])
+@login_required
+def listar_historico():
+    """Lista imagens salvas por pasta, limitando quantidade por pasta."""
+    try:
+        limite_req = request.args.get("limit", "80")
+        try:
+            limite = max(1, min(int(limite_req), 500))
+        except (TypeError, ValueError):
+            limite = 80
+        pastas = coletar_imagens(limit=limite)
+        return jsonify({"success": True, "dirs": pastas, "count": len(pastas)})
+    except Exception as exc:  # pylint: disable=broad-except
+        return jsonify({"success": False, "message": f"Erro ao listar imagens: {exc}"}), 500
+
+
+@app.route("/historico/file", methods=["GET"])
+@login_required
+def servir_imagem_historico():
+    """Entrega um arquivo de imagem do histÇürico com seguranÇõÇœ de caminho."""
+    rel_path = request.args.get("path", "")
+    if not rel_path:
+        return jsonify({"success": False, "message": "path Ç¸ obrigatÇürio"}), 400
+
+    try:
+        destino = (ROOT_DIR / rel_path).resolve()
+        if ROOT_DIR not in destino.parents and destino != ROOT_DIR:
+            return jsonify({"success": False, "message": "Caminho invalido"}), 400
+        if not destino.exists() or not destino.is_file():
+            return jsonify({"success": False, "message": "Arquivo nÇœo encontrado"}), 404
+        if destino.suffix.lower() not in ALLOWED_IMG_EXT:
+            return jsonify({"success": False, "message": "ExtensÇ¦o nÇœo permitida"}), 400
+        return send_file(destino)
+    except Exception as exc:  # pylint: disable=broad-except
+        return jsonify({"success": False, "message": f"Erro ao enviar arquivo: {exc}"}), 500
 
 
 # Rota principal: Tela de login
