@@ -19,7 +19,7 @@ def criar_usuario(usuario):
     return True
 
 
-def listar_usuarios(limit=5):
+def listar_usuarios(limit=20):
     """Retorna lista de usuarios cadastrados (nome, email, senha)."""
     conn = get_connection()
     cursor_obj = conn.cursor()

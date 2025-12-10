@@ -643,7 +643,12 @@ def tela_cadastro():
 def usuarios_sugeridos():
     """Retorna usuarios existentes para login rapido (limite 5)."""
     try:
-        usuarios = listar_usuarios(limit=5)
+        try:
+            limite_req = int(request.args.get("limit", 20))
+        except (TypeError, ValueError):
+            limite_req = 20
+        limite = max(1, min(limite_req, 50))
+        usuarios = listar_usuarios(limit=limite)
         return jsonify({"success": True, "users": usuarios, "count": len(usuarios)})
     except Exception as exc:  # pylint: disable=broad-except
         return jsonify({"success": False, "message": f"Erro ao listar usuarios: {exc}"}), 500
