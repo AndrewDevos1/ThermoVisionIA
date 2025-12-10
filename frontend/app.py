@@ -388,21 +388,80 @@ def executar_script():
     log_path = logs_dir / f"{script_id}.log"
 
     # Monta args permitidos
-    args_permitidos = {
-        "camera_url",
-        "camera_index",
-        "output_dir",
-        "intervalo",
-        "duracao",
+    args_permitidos_por_script = {
+        # captura base
+        "DatasetCreate.py": {
+            "camera_url",
+            "camera_index",
+            "output_dir",
+            "intervalo",
+            "duracao",
+            "coords",
+            "crop_dir",
+        },
+        # definicao de ROI
+        "DatasetCut.py": {
+            "input_image",
+            "roi",
+            "interactive",
+            "interactive_count",
+            "preview",
+            "save_crops",
+            "output_dir",
+            "display_width",
+        },
+        # filtros unitarios
+        "DatasetFilter.py": {
+            "input_dir",
+            "input",
+            "brilho",
+            "adaptive_block_size",
+            "adaptive_c",
+            "canny_low",
+            "canny_high",
+            "output_dir",
+        },
+        # filtros em lote
+        "DatasetFilterApliqued.py": {
+            "input_dir",
+            "adaptive_block_size",
+            "adaptive_c",
+            "canny_low",
+            "canny_high",
+            "output_dir",
+        },
+        # recortes com coordenadas salvas
+        "DatasetFilterCut.py": {
+            "coords",
+            "input_dirs",
+            "output_dir",
+        },
     }
+    args_permitidos = args_permitidos_por_script.get(nome_script, set())
+
     cli_args = []
+
+    def adicionar_arg(chave_cli: str, valor):
+        if isinstance(valor, bool):
+            if valor:
+                cli_args.append(f"--{chave_cli}")
+        elif isinstance(valor, (list, tuple)):
+            for v in valor:
+                if v is None or v == "":
+                    continue
+                cli_args.append(f"--{chave_cli}")
+                cli_args.append(str(v))
+        else:
+            cli_args.append(f"--{chave_cli}")
+            cli_args.append(str(valor))
+
     for chave, valor in params.items():
         if chave not in args_permitidos:
             continue
         if valor is None or valor == "":
             continue
-        cli_args.append(f"--{chave}")
-        cli_args.append(str(valor))
+        chave_cli = chave.replace("_", "-")
+        adicionar_arg(chave_cli, valor)
 
     try:
         proc = subprocess.Popen(

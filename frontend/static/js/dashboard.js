@@ -241,11 +241,122 @@ document.addEventListener('DOMContentLoaded', function() {
         return params;
     }
 
-    function montarParamsScript(viewer) {
+    function parseNumero(valor) {
+        if (valor === undefined || valor === null) return null;
+        const n = parseInt(valor, 10);
+        return Number.isNaN(n) ? null : n;
+    }
+
+    function parseLista(texto) {
+        if (!texto) return [];
+        return texto
+            .split(/[\n;,]/)
+            .map((v) => v.trim())
+            .filter((v) => v.length > 0);
+    }
+
+    function parseRois(texto) {
+        if (!texto) return [];
+        return texto
+            .split(/\n/)
+            .map((v) => v.trim())
+            .filter((v) => v.length > 0);
+    }
+
+    function montarParamsScript(viewer, script) {
         const params = obterParamsCamera(viewer);
         if (viewer && viewer.outputDirInput) {
             const val = viewer.outputDirInput.value.trim();
             if (val) params.output_dir = val;
+        }
+
+        if (!script) return params;
+
+        const card = viewer.cardEl;
+        switch (script) {
+            case "DatasetCut.py": {
+                const imgEl = card.querySelector(".cut-input-image");
+                const roiEl = card.querySelector(".cut-input-roi");
+                const interactiveEl = card.querySelector(".cut-interactive");
+                const countEl = card.querySelector(".cut-interactive-count");
+                const previewEl = card.querySelector(".cut-preview");
+                const saveEl = card.querySelector(".cut-save-crops");
+                const displayEl = card.querySelector(".cut-display-width");
+                if (imgEl && imgEl.value.trim()) params.input_image = imgEl.value.trim();
+                if (roiEl && roiEl.value.trim()) {
+                    const lista = parseRois(roiEl.value);
+                    if (lista.length > 0) params.roi = lista;
+                }
+                if (interactiveEl) params.interactive = interactiveEl.checked;
+                const qtd = countEl ? parseNumero(countEl.value) : null;
+                if (qtd) params.interactive_count = qtd;
+                if (previewEl) params.preview = previewEl.checked;
+                if (saveEl) params.save_crops = saveEl.checked;
+                const dw = displayEl ? parseNumero(displayEl.value) : null;
+                if (dw) params.display_width = dw;
+                break;
+            }
+            case "DatasetFilter.py": {
+                const filesEl = card.querySelector(".filter-input-files");
+                const dirEl = card.querySelector(".filter-input-dir");
+                const brilhoEl = card.querySelector(".filter-brilho");
+                const adpBlockEl = card.querySelector(".filter-adp-block");
+                const adpCEl = card.querySelector(".filter-adp-c");
+                const cannyLowEl = card.querySelector(".filter-canny-low");
+                const cannyHighEl = card.querySelector(".filter-canny-high");
+                if (filesEl && filesEl.value.trim()) {
+                    const lista = parseLista(filesEl.value);
+                    if (lista.length > 0) params.input = lista;
+                }
+                if (dirEl && dirEl.value.trim()) params.input_dir = dirEl.value.trim();
+                const brilhoVal = brilhoEl ? parseNumero(brilhoEl.value) : null;
+                if (brilhoVal !== null) params.brilho = brilhoVal;
+                const blk = adpBlockEl ? parseNumero(adpBlockEl.value) : null;
+                if (blk) params.adaptive_block_size = blk;
+                const cVal = adpCEl ? parseNumero(adpCEl.value) : null;
+                if (cVal !== null) params.adaptive_c = cVal;
+                const cLow = cannyLowEl ? parseNumero(cannyLowEl.value) : null;
+                if (cLow) params.canny_low = cLow;
+                const cHigh = cannyHighEl ? parseNumero(cannyHighEl.value) : null;
+                if (cHigh) params.canny_high = cHigh;
+                break;
+            }
+            case "DatasetFilterApliqued.py": {
+                const dirEl = card.querySelector(".filter-apl-input-dir");
+                const adpBlockEl = card.querySelector(".filter-apl-adp-block");
+                const adpCEl = card.querySelector(".filter-apl-adp-c");
+                const cannyLowEl = card.querySelector(".filter-apl-canny-low");
+                const cannyHighEl = card.querySelector(".filter-apl-canny-high");
+                if (dirEl && dirEl.value.trim()) params.input_dir = dirEl.value.trim();
+                const blk = adpBlockEl ? parseNumero(adpBlockEl.value) : null;
+                if (blk) params.adaptive_block_size = blk;
+                const cVal = adpCEl ? parseNumero(adpCEl.value) : null;
+                if (cVal !== null) params.adaptive_c = cVal;
+                const cLow = cannyLowEl ? parseNumero(cannyLowEl.value) : null;
+                if (cLow) params.canny_low = cLow;
+                const cHigh = cannyHighEl ? parseNumero(cannyHighEl.value) : null;
+                if (cHigh) params.canny_high = cHigh;
+                break;
+            }
+            case "DatasetFilterCut.py": {
+                const coordsEl = card.querySelector(".cut-coords");
+                const dirsEl = card.querySelector(".cut-input-dirs");
+                if (coordsEl && coordsEl.value.trim()) params.coords = coordsEl.value.trim();
+                if (dirsEl && dirsEl.value.trim()) {
+                    const lista = parseLista(dirsEl.value);
+                    if (lista.length > 0) params.input_dirs = lista;
+                }
+                break;
+            }
+            case "DatasetCreate.py": {
+                const coordsEl = card.querySelector(".ds-create-coords");
+                const cropDirEl = card.querySelector(".ds-create-crop-dir");
+                if (coordsEl && coordsEl.value.trim()) params.coords = coordsEl.value.trim();
+                if (cropDirEl && cropDirEl.value.trim()) params.crop_dir = cropDirEl.value.trim();
+                break;
+            }
+            default:
+                break;
         }
         return params;
     }
@@ -331,6 +442,239 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function renderScriptFields(viewer, script) {
+        const container = viewer.dynamicFields;
+        if (!container) return;
+        const baseClass = "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500";
+        let html = "";
+        switch (script) {
+            case "DatasetCut.py":
+                html = `
+                    <div class="text-xs text-gray-600">Campos para DatasetCut</div>
+                    <div class="p-3 border border-dashed border-gray-300 rounded-md bg-white space-y-2">
+                        <label class="text-xs font-semibold text-gray-700">Carregar imagem para desenhar ROI (local, s￿ para referencia)</label>
+                        <input type="file" accept="image/*" class="cut-file-input ${baseClass}">
+                        <canvas class="cut-canvas w-full border border-gray-300 rounded-md" style="max-height:320px;"></canvas>
+                        <div class="text-[11px] text-gray-500">Desenhe um retￂngulo no canvas; as coordenadas ser￣o preenchidas abaixo usando dimensￂo original da imagem carregada.</div>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Imagem de referencia</label>
+                        <input type="text" class="cut-input-image ${baseClass}" placeholder="imagens/foto_050.jpg">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">ROIs (uma por linha: x,y,w,h)</label>
+                        <textarea class="cut-input-roi ${baseClass}" rows="2" placeholder="100,50,200,150"></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Qtd. ROIs interativas</label>
+                            <input type="number" min="1" class="cut-interactive-count ${baseClass}" placeholder="1">
+                        </div>
+                        <label class="flex items-center gap-2 mt-6 text-xs text-gray-700">
+                            <input type="checkbox" class="cut-interactive h-4 w-4"> Modo interativo
+                        </label>
+                        <label class="flex items-center gap-2 mt-6 text-xs text-gray-700">
+                            <input type="checkbox" class="cut-preview h-4 w-4"> Mostrar preview
+                        </label>
+                    </div>
+                    <label class="flex items-center gap-2 text-xs text-gray-700">
+                        <input type="checkbox" class="cut-save-crops h-4 w-4"> Salvar recortes em coordenadaN/
+                    </label>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Largura de exibicao (preview)</label>
+                        <input type="number" min="100" class="cut-display-width ${baseClass}" placeholder="1024">
+                    </div>
+                `;
+                break;
+            case "DatasetFilter.py":
+                html = `
+                    <div class="text-xs text-gray-600">Campos para DatasetFilter</div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Arquivos (separar por virgula)</label>
+                        <input type="text" class="filter-input-files ${baseClass}" placeholder="imagens/foto_050.jpg, imagens/foto_1138.jpg">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Pasta de entrada</label>
+                        <input type="text" class="filter-input-dir ${baseClass}" placeholder="imagens">
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Brilho</label>
+                            <input type="number" class="filter-brilho ${baseClass}" placeholder="-40">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Adaptive block</label>
+                            <input type="number" class="filter-adp-block ${baseClass}" placeholder="11">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Adaptive C</label>
+                            <input type="number" class="filter-adp-c ${baseClass}" placeholder="2">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Canny low</label>
+                            <input type="number" class="filter-canny-low ${baseClass}" placeholder="100">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Canny high</label>
+                            <input type="number" class="filter-canny-high ${baseClass}" placeholder="200">
+                        </div>
+                    </div>
+                `;
+                break;
+            case "DatasetFilterApliqued.py":
+                html = `
+                    <div class="text-xs text-gray-600">Campos para DatasetFilterApliqued</div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Pasta de entrada</label>
+                        <input type="text" class="filter-apl-input-dir ${baseClass}" placeholder="imagens">
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Adaptive block</label>
+                            <input type="number" class="filter-apl-adp-block ${baseClass}" placeholder="11">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Adaptive C</label>
+                            <input type="number" class="filter-apl-adp-c ${baseClass}" placeholder="2">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Canny low</label>
+                            <input type="number" class="filter-apl-canny-low ${baseClass}" placeholder="100">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-700">Canny high</label>
+                            <input type="number" class="filter-apl-canny-high ${baseClass}" placeholder="200">
+                        </div>
+                    </div>
+                `;
+                break;
+            case "DatasetFilterCut.py":
+                html = `
+                    <div class="text-xs text-gray-600">Campos para DatasetFilterCut</div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Arquivo de coordenadas</label>
+                        <input type="text" class="cut-coords ${baseClass}" placeholder="recortes.pkl">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Pastas de filtros (separar por virgula)</label>
+                        <input type="text" class="cut-input-dirs ${baseClass}" placeholder="imgAdpGray2, imgCanny, imgCannyInvertido">
+                    </div>
+                `;
+                break;
+            case "DatasetCreate.py":
+                html = `
+                    <div class="text-xs text-gray-600">Campos para DatasetCreate (captura + recortes opcionais)</div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Arquivo de coordenadas (recortes.pkl)</label>
+                        <input type="text" class="ds-create-coords ${baseClass}" placeholder="recortes.pkl" value="recortes.pkl">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Pasta de recortes (opcional)</label>
+                        <input type="text" class="ds-create-crop-dir ${baseClass}" placeholder="cortes">
+                    </div>
+                `;
+                break;
+            default:
+                html = '<div class="text-xs text-gray-600">Nenhum campo adicional.</div>';
+                break;
+        }
+        container.innerHTML = html;
+        if (script === "DatasetCut.py") {
+            attachCutDrawing(container);
+        }
+    }
+
+    function attachCutDrawing(container) {
+        const fileInput = container.querySelector(".cut-file-input");
+        const canvas = container.querySelector(".cut-canvas");
+        const roiTextarea = container.querySelector(".cut-input-roi");
+        if (!fileInput || !canvas || !roiTextarea) return;
+
+        const ctx = canvas.getContext("2d");
+        let img = null;
+        let scaleFactor = 1;
+        let startPoint = null;
+
+        function clearCanvas() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (img) {
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function setCanvasSize(width, height) {
+            canvas.width = width;
+            canvas.height = height;
+        }
+
+        fileInput.addEventListener("change", () => {
+            const file = fileInput.files ? fileInput.files[0] : null;
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const image = new Image();
+                image.onload = () => {
+                    img = image;
+                    const maxWidth = 480;
+                    const scale = image.width > maxWidth ? maxWidth / image.width : 1;
+                    const cw = Math.max(50, Math.round(image.width * scale));
+                    const ch = Math.max(50, Math.round(image.height * scale));
+                    setCanvasSize(cw, ch);
+                    scaleFactor = image.width / cw;
+                    clearCanvas();
+                };
+                image.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        canvas.addEventListener("mousedown", (ev) => {
+            if (!img) return;
+            const rect = canvas.getBoundingClientRect();
+            startPoint = {
+                x: ev.clientX - rect.left,
+                y: ev.clientY - rect.top,
+            };
+        });
+
+        canvas.addEventListener("mousemove", (ev) => {
+            if (!img || !startPoint) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = ev.clientX - rect.left;
+            const y = ev.clientY - rect.top;
+            clearCanvas();
+            ctx.strokeStyle = "#f97316";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(startPoint.x, startPoint.y, x - startPoint.x, y - startPoint.y);
+        });
+
+        canvas.addEventListener("mouseup", (ev) => {
+            if (!img || !startPoint) return;
+            const rect = canvas.getBoundingClientRect();
+            const endPoint = {
+                x: ev.clientX - rect.left,
+                y: ev.clientY - rect.top,
+            };
+            const xCanvas = Math.min(startPoint.x, endPoint.x);
+            const yCanvas = Math.min(startPoint.y, endPoint.y);
+            const wCanvas = Math.abs(endPoint.x - startPoint.x);
+            const hCanvas = Math.abs(endPoint.y - startPoint.y);
+            clearCanvas();
+            ctx.strokeStyle = "#f97316";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(xCanvas, yCanvas, wCanvas, hCanvas);
+
+            const xOrig = Math.round(xCanvas * scaleFactor);
+            const yOrig = Math.round(yCanvas * scaleFactor);
+            const wOrig = Math.round(wCanvas * scaleFactor);
+            const hOrig = Math.round(hCanvas * scaleFactor);
+            const linha = `${xOrig},${yOrig},${wOrig},${hOrig}`;
+            roiTextarea.value = linha;
+            startPoint = null;
+        });
+    }
+
     // Função para atualizar o status visual
     function updateStatus(viewer, connected, labelPersonalizado = null) {
         isConnected = connected;
@@ -409,8 +753,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const downloadLogBtn = cardEl.querySelector(".download-log");
         const pararScriptBtn = cardEl.querySelector(".parar-script");
         const outputDirInput = cardEl.querySelector(".output-dir-input");
+        const dynamicFieldsContainer = (() => {
+            const existente = cardEl.querySelector(".script-dynamic-fields");
+            if (existente) {
+                existente.innerHTML = "";
+                return existente;
+            }
+            const parent = outputDirInput ? outputDirInput.closest(".space-y-2") : null;
+            if (!parent) return null;
+            const div = document.createElement("div");
+            div.className = "script-dynamic-fields space-y-2";
+            parent.appendChild(div);
+            return div;
+        })();
 
-        const viewer = { cardEl, select, refreshBtn, connectBtn, streamImg, disconnectedMsg, videoContainer, fullscreenBtn, statusBadge, selectedLabel, blocoAvancado, avancadoToggle, scriptSelect, refreshScriptsBtn, executarScriptBtn, feedbackScript, logBox, downloadLogBtn, pararScriptBtn, outputDirInput, logInterval: null, currentScriptId: null };
+        const viewer = { cardEl, select, refreshBtn, connectBtn, streamImg, disconnectedMsg, videoContainer, fullscreenBtn, statusBadge, selectedLabel, blocoAvancado, avancadoToggle, scriptSelect, refreshScriptsBtn, executarScriptBtn, feedbackScript, logBox, downloadLogBtn, pararScriptBtn, outputDirInput, dynamicFields: dynamicFieldsContainer, logInterval: null, currentScriptId: null };
 
         if (refreshBtn) {
             refreshBtn.addEventListener("click", () => {
@@ -463,6 +820,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
+        if (scriptSelect) {
+            scriptSelect.addEventListener("change", () => {
+                renderScriptFields(viewer, scriptSelect.value);
+            });
+            renderScriptFields(viewer, scriptSelect.value);
+        }
+
         if (executarScriptBtn && scriptSelect) {
             executarScriptBtn.addEventListener("click", async () => {
                 const script = scriptSelect.value;
@@ -472,7 +836,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 if (feedbackScript) feedbackScript.textContent = "Executando...";
                 if (logBox) logBox.textContent = "Iniciando...";
-                const paramsCam = montarParamsScript(viewer);
+                const paramsCam = montarParamsScript(viewer, script);
                 try {
                     const resp = await fetch("/scripts/run", {
                         method: "POST",
@@ -661,6 +1025,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             const logBox = clone.querySelector(".log-box");
             if (logBox) logBox.textContent = "Sem logs ainda.";
+            const dynFields = clone.querySelector(".script-dynamic-fields");
+            if (dynFields) dynFields.innerHTML = "";
             const downloadBtn = clone.querySelector(".download-log");
             if (downloadBtn) {
                 downloadBtn.disabled = true;
