@@ -19,6 +19,29 @@ def criar_usuario(usuario):
     return True
 
 
+def listar_usuarios(limit=5):
+    """Retorna lista de usuarios cadastrados (nome, email, senha)."""
+    conn = get_connection()
+    cursor_obj = conn.cursor()
+    cursor_obj.execute(
+        """
+        SELECT nome, email, senha
+        FROM usuarios
+        ORDER BY id DESC
+        LIMIT ?
+        """,
+        (limit,),
+    )
+    rows = cursor_obj.fetchall()
+    cursor_obj.close()
+    conn.close()
+    return [
+        {"nome": r[0], "email": r[1], "senha": r[2]}
+        for r in rows
+        if r and r[0] is not None
+    ]
+
+
 def verificar_login(usuario, senha_digitada):
     conn = get_connection()
     cursor_obj = conn.cursor()

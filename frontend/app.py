@@ -13,7 +13,7 @@ import time
 import cv2
 from functools import wraps
 
-from services.manipular_database_sqlite import criar_usuario, verificar_login
+from services.manipular_database_sqlite import criar_usuario, verificar_login, listar_usuarios
 from utils.validacoes import (
     validar_email,
     validar_senha,
@@ -637,6 +637,16 @@ def tela_cadastro():
             return redirect(url_for("tela_login"))
 
     return redirect(url_for("tela_login"))
+
+
+@app.route("/usuarios/sugeridos", methods=["GET"])
+def usuarios_sugeridos():
+    """Retorna usuarios existentes para login rapido (limite 5)."""
+    try:
+        usuarios = listar_usuarios(limit=5)
+        return jsonify({"success": True, "users": usuarios, "count": len(usuarios)})
+    except Exception as exc:  # pylint: disable=broad-except
+        return jsonify({"success": False, "message": f"Erro ao listar usuarios: {exc}"}), 500
 
 
 @app.route("/dashboard")

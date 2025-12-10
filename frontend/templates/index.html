@@ -53,5 +53,62 @@
             <a href="{{ url_for('tela_cadastro') }}" class="btn btn-criarConta link-criarConta" id="criarConta">
                 Criar conta
             </a>
+
+            <div class="login-rapido">
+                <h2>Login rápido</h2>
+                <p class="descricao-rapida">Selecione um usuário já cadastrado para preencher login e senha.</p>
+                <div id="lista-rapida" class="lista-rapida"></div>
+                <div id="status-rapido" class="status-rapido"></div>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const lista = document.getElementById("lista-rapida");
+            const status = document.getElementById("status-rapido");
+            const inputUser = document.getElementById("usuario");
+            const inputSenha = document.getElementById("senha");
+
+            function setStatus(msg, isError = false) {
+                if (!status) return;
+                status.textContent = msg;
+                status.className = "status-rapido " + (isError ? "erro" : "ok");
+            }
+
+            async function carregarUsuarios() {
+                try {
+                    const resp = await fetch("/usuarios/sugeridos");
+                    const data = await resp.json();
+                    if (!data.success) {
+                        setStatus(data.message || "Não foi possível carregar usuários.", true);
+                        return;
+                    }
+                    if (!data.users || data.users.length === 0) {
+                        setStatus("Nenhum usuário cadastrado para login rápido.");
+                        return;
+                    }
+                    lista.innerHTML = "";
+                    data.users.forEach((u) => {
+                        const btn = document.createElement("button");
+                        btn.type = "button";
+                        btn.className = "btn-rapido";
+                        btn.textContent = `${u.nome} (${u.email})`;
+                        btn.addEventListener("click", () => {
+                            if (inputUser) inputUser.value = u.nome;
+                            if (inputSenha) inputSenha.value = u.senha || "";
+                            setStatus(`Credenciais de ${u.nome} preenchidas.`);
+                        });
+                        lista.appendChild(btn);
+                    });
+                    setStatus(`Login rápido disponível para ${data.users.length} usuário(s).`);
+                } catch (e) {
+                    setStatus("Erro ao carregar usuários.", true);
+                }
+            }
+
+            carregarUsuarios();
+        });
+    </script>
 </body>
 </html>
