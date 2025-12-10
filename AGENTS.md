@@ -1,31 +1,33 @@
 # Repository Guidelines
 
-## Estrutura do Projeto e Organização de Módulos
-- `frontend/`: entrada Flask (`app.py`), templates (`templates/`), assets (`static/`), configuração (`config.py`), helpers de banco (`services/`) e validações/forms (`utils/`). Scripts de execução e setup (`run_demo.sh`, `run_quick.sh`, `setup.sh`) também ficam aqui; o SQLite local gera `thermovision.db`.
-- `backend/`: scripts OpenCV para captura e preparação de datasets (ex.: `DatasetCreate.py`, `DatasetFilter*.py`) que gravam em `imagens/` e testam câmeras/RTSP.
-- `shared/`: reservado para utilitários comuns; `docs/` mantém documentação; o `run.sh` na raiz traz menu para configurar o frontend ou rodar scripts do backend. Evite versionar mídias grandes ou dados gerados.
+## Estrutura do Projeto e Organizacao de Modulos
+- `frontend/`: app Flask (`app.py`), configuracao (`config.py`), templates (`templates/`), assets (`static/`), helpers de banco (`services/`) e validacoes/forms (`utils/`). Scripts de setup/execucao ficam aqui.
+- `backend/`: scripts OpenCV de captura e processamento de dataset (`DatasetCreate.py`, `DatasetFilter*.py`, `DatasetCut.py`), geram saida em `imagens/` ou subpastas de filtros.
+- `docs/` para documentacao; `run.sh` na raiz orquestra passos de setup; evite versionar midias grandes ou dados gerados.
 
 ## Comandos de Build, Teste e Desenvolvimento
-- Demo (WSL amigável): `cd frontend && ./run_demo.sh` — cria venv se faltar, gera `demo_video.mp4`, força `MODE="demo"` e sobe Flask com SQLite.
-- Rápido sem PostgreSQL: `cd frontend && ./run_quick.sh` — usa SQLite e cria `thermovision.db` se precisar.
-- Pilha completa: `cd frontend && ./setup.sh && ./setup_database.sh`, depois `./start_postgres.sh` e `./run.sh` — instala dependências, prepara PostgreSQL e serve em `http://localhost:5000`.
-- Orquestrador raiz: `./run.sh` — menu para setup, status e execução de scripts do backend.
-- Teste de câmera: `cd frontend && python test_camera.py` — verifica câmeras físicas antes de trocar `config.MODE` para `"real"`.
+- Demo (WSL amigavel): `cd frontend && ./run_demo.sh` — cria venv, gera `demo_video.mp4`, força `MODE="demo"` e sobe Flask com SQLite.
+- Rapido sem PostgreSQL: `cd frontend && ./run_quick.sh` — usa SQLite e cria `thermovision.db` se precisar.
+- Pilha completa: `cd frontend && ./setup.sh && ./setup_database.sh`, depois `./start_postgres.sh` e `./run.sh` — instala dependencias, prepara PostgreSQL e serve em `http://localhost:5000`.
+- Orquestrador raiz: `./run.sh` — menu para setup, status e execucao de scripts do backend.
+- Windows: na raiz, `.\run_frontend.bat` cria/ativa `frontend\venv`, instala deps e roda `python app.py` em modo dev.
+- Teste de camera: `cd frontend && python test_camera.py` — valide hardware antes de trocar `config.MODE` para `"real"`.
 
-## Estilo de Código e Convenções de Nomes
-- Python: siga PEP 8, indentação de 4 espaços, snake_case para funções/variáveis, constantes em maiúsculas; mantenha docstrings curtas; reutilize utilitários de `services/` e `utils/` em vez de duplicar lógica.
-- Templates: Jinja2 em `frontend/templates/`; estilização com classes Tailwind; JavaScript próprio em `frontend/static/js/`.
-- Configuração: prefira `frontend/config.py` e variáveis de ambiente; não deixe credenciais fixas em scripts de captura ou conectores de banco.
+## Estilo de Codigo e Convencoes de Nomes
+- Python: PEP8, 4 espacos, snake_case para funcoes/variaveis, classes em CapWords; docstrings curtas; extraia logica para `services/` e `utils/` em vez de duplicar.
+- Templates: Jinja2 em `frontend/templates/`; JS proprio em `frontend/static/js/`; mantenha nomes minúsculos por pagina (`dashboard.html/.css/.js`).
+- Configuracao: prefira `frontend/config.py` e variaveis de ambiente; nao deixe credenciais fixas em scripts ou conectores.
 
 ## Diretrizes de Testes
-- Não há suíte automatizada ainda; use verificação manual.
-- Em modo demo, execute `./run_demo.sh` e valide cadastro/login e streaming de vídeo; com hardware real, rode `python test_camera.py` e confira leitura de frames.
-- Ao adicionar testes, nomeie `test_*.py` e agrupe junto ao módulo ou em `frontend/tests/`; isole câmera/banco com mocks para manter reprodutibilidade.
+- Ainda sem suite automatizada; use verificacao manual.
+- Modo demo: `./run_demo.sh` e valide cadastro/login e streaming; modo real: `python test_camera.py` para checar captura.
+- Ao adicionar testes, nomeie `test_*.py` e agrupe junto ao modulo ou em `frontend/tests/`; use mocks para camera/banco.
 
 ## Diretrizes de Commits e Pull Requests
-- Histórico usa assuntos curtos (Português/Inglês). Prefira mensagens imperativas e concisas, opcionalmente com escopo (`[frontend]`, `[backend]`).
-- Em PRs inclua: resumo das mudanças, comandos executados/setup, evidências de teste (logs ou screenshots do streaming/UI), observações de banco (PostgreSQL x SQLite) e vínculo com issue/tarefa.
+- Mensagens curtas, imperativas e focadas (ex.: `chore: parametrizar filtros`); commits devem ser descritivos.
+- Em PRs inclua resumo, comandos/setup executados, evidencias de teste (logs/screenshots), observacoes de banco (PostgreSQL x SQLite) e link com issue.
+- Alerta: sinalize antes quando a mudanca for complexa ou de alto impacto para decidir o caminho.
 
-## Segurança e Configuração
-- Não versionar credenciais de câmera, senhas de banco, `thermovision.db` ou datasets grandes. Use variáveis de ambiente ou configs locais.
-- Confirme `config.MODE` (`demo` x `real`) antes de publicar; gere vídeos de demo com `create_demo_video.py` em vez de armazenar binários volumosos no git.
+## Seguranca e Configuracao
+- Nao versionar credenciais de camera, senhas de banco, `.env`, `thermovision.db` ou datasets grandes. Use variaveis de ambiente.
+- Confirme `config.MODE` (`demo` x `real`) antes de publicar; gere videos de demo com `create_demo_video.py` em vez de armazenar binarios pesados.
