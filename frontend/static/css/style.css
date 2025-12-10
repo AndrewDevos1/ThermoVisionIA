@@ -113,18 +113,25 @@ body {
 }
 
 .input-senha {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    position: relative;
+    display: block;
+}
+
+.input-senha input {
+    width: 100%;
+    padding-right: 42px;
 }
 
 .btn-olho {
-    padding: 8px 10px;
-    border: 1px solid #d4d4d8;
-    border-radius: 8px;
-    background: #f4f4f5;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 6px;
+    border: none;
+    background: transparent;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 1rem;
     line-height: 1;
 }
 
