@@ -477,6 +477,37 @@ def baixar_log():
     return send_file(log_path, mimetype="text/plain", as_attachment=True, download_name=f"{script_id}.log")
 
 
+@app.route("/scripts/stop", methods=["POST"])
+def parar_script():
+    """Encerra um script em execução pelo script_id."""
+    data = request.get_json() or {}
+    script_id = data.get("script_id")
+    if not script_id:
+        return jsonify({"success": False, "message": "script_id é obrigatório"}), 400
+
+    info = processos.get(script_id)
+    if not info:
+        return jsonify({"success": False, "message": "Processo não encontrado"}), 404
+
+    proc = info.get("proc")
+    log_path = info.get("log")
+    if proc and proc.poll() is None:
+        try:
+            proc.terminate()
+            try:
+                proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+            if log_path:
+                with open(log_path, "a", encoding="utf-8") as f:
+                    f.write(f"\n[{datetime.now().isoformat()}] Interrompido pelo usuário.\n")
+            return jsonify({"success": True, "message": "Processo interrompido."})
+        except Exception as e:
+            return jsonify({"success": False, "message": f"Erro ao interromper: {e}"}), 500
+    else:
+        return jsonify({"success": False, "message": "Processo já finalizado."})
+
+
 # Rota principal: Tela de login
 @app.route("/", methods=["GET", "POST"])
 def tela_login():

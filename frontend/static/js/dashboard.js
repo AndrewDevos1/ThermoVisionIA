@@ -233,6 +233,10 @@ document.addEventListener('DOMContentLoaded', function() {
             viewer.downloadLogBtn.disabled = false;
             viewer.downloadLogBtn.dataset.scriptId = scriptId;
         }
+        if (viewer.pararScriptBtn) {
+            viewer.pararScriptBtn.disabled = false;
+            viewer.pararScriptBtn.dataset.scriptId = scriptId;
+        }
         const atualizar = async () => {
             try {
                 const resp = await fetch(`/scripts/logs?script_id=${scriptId}`);
@@ -247,6 +251,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     viewer.logInterval = null;
                     if (viewer.feedbackScript) {
                         viewer.feedbackScript.textContent = `Finalizado (código ${result.return_code})`;
+                    }
+                    if (viewer.pararScriptBtn) {
+                        viewer.pararScriptBtn.disabled = true;
                     }
                 }
             } catch (e) {
@@ -373,8 +380,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const feedbackScript = cardEl.querySelector(".feedback-script");
         const logBox = cardEl.querySelector(".log-box");
         const downloadLogBtn = cardEl.querySelector(".download-log");
+        const pararScriptBtn = cardEl.querySelector(".parar-script");
 
-        const viewer = { cardEl, select, refreshBtn, connectBtn, streamImg, disconnectedMsg, videoContainer, fullscreenBtn, statusBadge, selectedLabel, blocoAvancado, avancadoToggle, scriptSelect, refreshScriptsBtn, executarScriptBtn, feedbackScript, logBox, downloadLogBtn, logInterval: null, currentScriptId: null };
+        const viewer = { cardEl, select, refreshBtn, connectBtn, streamImg, disconnectedMsg, videoContainer, fullscreenBtn, statusBadge, selectedLabel, blocoAvancado, avancadoToggle, scriptSelect, refreshScriptsBtn, executarScriptBtn, feedbackScript, logBox, downloadLogBtn, pararScriptBtn, logInterval: null, currentScriptId: null };
 
         if (refreshBtn) {
             refreshBtn.addEventListener("click", () => {
@@ -435,6 +443,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 if (feedbackScript) feedbackScript.textContent = "Executando...";
+                if (logBox) logBox.textContent = "Iniciando...";
                 try {
                     const resp = await fetch("/scripts/run", {
                         method: "POST",
@@ -464,6 +473,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 const sid = downloadLogBtn.dataset.scriptId;
                 if (!sid) return;
                 window.open(`/scripts/logs/download?script_id=${sid}`, "_blank");
+            });
+        }
+
+        if (pararScriptBtn) {
+            pararScriptBtn.addEventListener("click", async () => {
+                const sid = pararScriptBtn.dataset.scriptId;
+                if (!sid) return;
+                pararScriptBtn.disabled = true;
+                try {
+                    const resp = await fetch("/scripts/stop", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ script_id: sid }),
+                    });
+                    const result = await resp.json();
+                    if (!result.success) {
+                        alert(result.message || "Não foi possível interromper.");
+                    } else if (feedbackScript) {
+                        feedbackScript.textContent = result.message || "Processo interrompido.";
+                    }
+                } catch (e) {
+                    console.error(e);
+                    alert("Erro ao interromper script.");
+                }
             });
         }
 
@@ -603,6 +636,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (downloadBtn) {
                 downloadBtn.disabled = true;
                 delete downloadBtn.dataset.scriptId;
+            }
+            const stopBtn = clone.querySelector(".parar-script");
+            if (stopBtn) {
+                stopBtn.disabled = true;
+                delete stopBtn.dataset.scriptId;
             }
 
             streamingList.appendChild(clone);
