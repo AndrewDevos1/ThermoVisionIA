@@ -26,9 +26,9 @@ def proximo_indice(path_saida: str) -> int:
 
 def main():
     parser = argparse.ArgumentParser(description="Captura imagens de câmera/RTSP em intervalos fixos.")
-    parser.add_argument("--camera_url", type=str, default="", help="URL RTSP completa.")
-    parser.add_argument("--camera_index", type=int, default=0, help="Índice da câmera local.")
-    parser.add_argument("--output_dir", type=str, default="imagens", help="Diretório de saída para fotos.")
+    parser.add_argument("--camera_url", "--camera-url", type=str, default="", help="URL RTSP completa.")
+    parser.add_argument("--camera_index", "--camera-index", type=int, default=0, help="Índice da câmera local.")
+    parser.add_argument("--output_dir", "--output-dir", type=str, default="imagens", help="Diretório de saída para fotos.")
     parser.add_argument("--intervalo", type=int, default=30, help="Intervalo entre fotos (s).")
     parser.add_argument("--duracao", type=int, default=600, help="Duração total da captura (s).")
     args = parser.parse_args()

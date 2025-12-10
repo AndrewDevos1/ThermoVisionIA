@@ -401,7 +401,7 @@ def executar_script():
             continue
         if valor is None or valor == "":
             continue
-        cli_args.append(f"--{chave.replace('_', '-')}")
+        cli_args.append(f"--{chave}")
         cli_args.append(str(valor))
 
     try:
