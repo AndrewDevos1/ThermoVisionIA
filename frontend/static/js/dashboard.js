@@ -436,6 +436,12 @@ document.addEventListener('DOMContentLoaded', function() {
             case "DatasetCut.py":
                 html = `
                     <div class="text-xs text-gray-600">Campos para DatasetCut</div>
+                    <div class="p-3 border border-dashed border-gray-300 rounded-md bg-white space-y-2">
+                        <label class="text-xs font-semibold text-gray-700">Carregar imagem para desenhar ROI (local, s￿ para referencia)</label>
+                        <input type="file" accept="image/*" class="cut-file-input ${baseClass}">
+                        <canvas class="cut-canvas w-full border border-gray-300 rounded-md" style="max-height:320px;"></canvas>
+                        <div class="text-[11px] text-gray-500">Desenhe um retￂngulo no canvas; as coordenadas ser￣o preenchidas abaixo usando dimensￂo original da imagem carregada.</div>
+                    </div>
                     <div>
                         <label class="text-xs font-semibold text-gray-700">Imagem de referencia</label>
                         <input type="text" class="cut-input-image ${baseClass}" placeholder="imagens/foto_050.jpg">
@@ -545,6 +551,100 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
         }
         container.innerHTML = html;
+        if (script === "DatasetCut.py") {
+            attachCutDrawing(container);
+        }
+    }
+
+    function attachCutDrawing(container) {
+        const fileInput = container.querySelector(".cut-file-input");
+        const canvas = container.querySelector(".cut-canvas");
+        const roiTextarea = container.querySelector(".cut-input-roi");
+        if (!fileInput || !canvas || !roiTextarea) return;
+
+        const ctx = canvas.getContext("2d");
+        let img = null;
+        let scaleFactor = 1;
+        let startPoint = null;
+
+        function clearCanvas() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (img) {
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function setCanvasSize(width, height) {
+            canvas.width = width;
+            canvas.height = height;
+        }
+
+        fileInput.addEventListener("change", () => {
+            const file = fileInput.files ? fileInput.files[0] : null;
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const image = new Image();
+                image.onload = () => {
+                    img = image;
+                    const maxWidth = 480;
+                    const scale = image.width > maxWidth ? maxWidth / image.width : 1;
+                    const cw = Math.max(50, Math.round(image.width * scale));
+                    const ch = Math.max(50, Math.round(image.height * scale));
+                    setCanvasSize(cw, ch);
+                    scaleFactor = image.width / cw;
+                    clearCanvas();
+                };
+                image.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        canvas.addEventListener("mousedown", (ev) => {
+            if (!img) return;
+            const rect = canvas.getBoundingClientRect();
+            startPoint = {
+                x: ev.clientX - rect.left,
+                y: ev.clientY - rect.top,
+            };
+        });
+
+        canvas.addEventListener("mousemove", (ev) => {
+            if (!img || !startPoint) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = ev.clientX - rect.left;
+            const y = ev.clientY - rect.top;
+            clearCanvas();
+            ctx.strokeStyle = "#f97316";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(startPoint.x, startPoint.y, x - startPoint.x, y - startPoint.y);
+        });
+
+        canvas.addEventListener("mouseup", (ev) => {
+            if (!img || !startPoint) return;
+            const rect = canvas.getBoundingClientRect();
+            const endPoint = {
+                x: ev.clientX - rect.left,
+                y: ev.clientY - rect.top,
+            };
+            const xCanvas = Math.min(startPoint.x, endPoint.x);
+            const yCanvas = Math.min(startPoint.y, endPoint.y);
+            const wCanvas = Math.abs(endPoint.x - startPoint.x);
+            const hCanvas = Math.abs(endPoint.y - startPoint.y);
+            clearCanvas();
+            ctx.strokeStyle = "#f97316";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(xCanvas, yCanvas, wCanvas, hCanvas);
+
+            const xOrig = Math.round(xCanvas * scaleFactor);
+            const yOrig = Math.round(yCanvas * scaleFactor);
+            const wOrig = Math.round(wCanvas * scaleFactor);
+            const hOrig = Math.round(hCanvas * scaleFactor);
+            const linha = `${xOrig},${yOrig},${wOrig},${hOrig}`;
+            roiTextarea.value = linha;
+            startPoint = null;
+        });
     }
 
     // Função para atualizar o status visual
