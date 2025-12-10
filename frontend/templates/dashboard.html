@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
     <head>
         <meta charset="UTF-8" />
@@ -13,14 +13,14 @@
                 font-family: "Inter", sans-serif;
             }
 
-            /* Estilo customizado para os cartÃµes (fundo, borda e sombra) */
+            /* Estilo customizado para os cartoes (fundo, borda e sombra) */
             .cartao-principal {
                 /* Sombra escura e pronunciada */
                 box-shadow: 6px 6px 0px #18181b;
                 border: 2px solid #18181b;
             }
 
-            /* Estilo para os botÃµes de aÃ§Ã£o e conexÃ£o (sombra e hover) */
+            /* Estilo para os botoes de acao e conexao (sombra e hover) */
             .btn-acao {
                 border: 2px solid #18181b;
                 border-radius: 0.5rem;
@@ -32,15 +32,15 @@
                 box-shadow: 2px 2px 0px #18181b;
             }
 
-            /* Estilo para a imagem de streaming para garantir que preencha a Ã¡rea */
+            /* Estilo para a imagem de streaming para garantir que preencha a area */
             #camera-stream {
                 width: 100%;
                 height: 100%;
-                object-fit: cover; /* Garante que o vÃ­deo preencha o container */
+                object-fit: cover; /* Garante que o video preencha o container */
                 border-radius: 10px;
             }
 
-            /* Classes de Ã­cones (Fallback) */
+            /* Classes de icones (Fallback) */
             .icon-svg {
                 width: 24px;
                 height: 24px;
@@ -111,7 +111,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.75 7.5h-.5a2 2 0 0 0-2 2v6.75a2 2 0 0 0 2 2h11.5a2 2 0 0 0 2-2V9.5a2 2 0 0 0-2-2h-.5l-1.2-2a1 1 0 0 0-.86-.5H8.81a1 1 0 0 0-.86.5l-1.2 2Z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 10.25a3.25 3.25 0 1 1 0 6.5 3.25 3.25 0 0 1 0-6.5Zm4.75-1h1.5m-0.75-0.75v1.5"/>
                         </svg>
-                        <span>Adicionar CÃ¢mera</span>
+                        <span>Adicionar Camera</span>
                     </a>
                     <a
                         href="#streaming"
@@ -153,7 +153,7 @@
                                 d="M6.75 5.25h10.5m-10.5 13.5h10.5m-10.5-6.75h10.5"
                             />
                         </svg>
-                        <span>AÃ§Ãµes rÃ¡pidas</span>
+                        <span>Acoes rapidas</span>
                     </a>
                     <a
                         href="#streaming"
@@ -179,7 +179,7 @@
                 </nav>
                 <div class="px-4 py-4 border-t border-white/10 text-white/70 text-sm">
                     <p class="font-semibold text-white">Modo Demo</p>
-                    <p>Streaming usa vÃ­deo local se configurado.</p>
+                    <p>Streaming usa video local se configurado.</p>
                 </div>
             </aside>
 
@@ -202,7 +202,7 @@
                             class="p-2 rounded-lg bg-white/10 hover:bg-white/20"
                             aria-label="Fechar menu"
                         >
-                            âœ•
+                            
                         </button>
                     </div>
                     <nav class="space-y-2 flex-1">
@@ -211,7 +211,7 @@
                             data-target="dashboard"
                             class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
                         >
-                            <span class="text-lg">ðŸ </span>
+                            <span class="text-lg"></span>
                             <span>Dashboard</span>
                         </a>
                         <a
@@ -219,15 +219,15 @@
                             data-target="add"
                             class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
                         >
-                            <span class="text-lg">âž•</span>
-                            <span>Adicionar CÃ¢mera</span>
+                            <span class="text-lg"></span>
+                            <span>Adicionar Camera</span>
                         </a>
                         <a
                             href="#streaming"
                             data-target="streaming"
                             class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
                         >
-                            <span class="text-lg">ðŸŽ¥</span>
+                            <span class="text-lg"></span>
                             <span>Streaming</span>
                         </a>
                         <a
@@ -235,22 +235,22 @@
                             data-target="streaming"
                             class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
                         >
-                            <span class="text-lg">âš¡</span>
-                            <span>AÃ§Ãµes rÃ¡pidas</span>
+                            <span class="text-lg"></span>
+                            <span>Acoes rapidas</span>
                         </a>
                         <a
                             href="#streaming"
                             data-target="streaming"
                             class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white transition"
                         >
-                            <span class="text-lg">ðŸ“Š</span>
+                            <span class="text-lg"></span>
                             <span>Status</span>
                         </a>
                     </nav>
                 </div>
             </div>
 
-            <!-- ConteÃºdo principal -->
+            <!-- Conteudo principal -->
             <div class="flex-1 flex flex-col">
                 <header class="flex items-center justify-between px-4 md:px-8 py-4 bg-white border-b border-gray-200 shadow-sm">
                     <div class="flex items-center gap-3">
@@ -259,7 +259,7 @@
                             class="lg:hidden p-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-100"
                             aria-label="Abrir menu"
                         >
-                            â˜°
+                            
                         </button>
                         <div>
                             <p class="text-xs uppercase tracking-wide text-gray-500">ThermoVisionIA</p>
@@ -275,25 +275,25 @@
                 </header>
 
                 <main class="flex-1 p-4 md:p-8">
-                    <!-- SeÃ§Ã£o Dashboard (resumo) -->
+                    <!-- Secao Dashboard (resumo) -->
                     <section id="sec-dashboard" class="space-y-8">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div class="cartao-principal bg-white p-4 rounded-xl">
                                 <p class="text-xs uppercase text-gray-500 font-semibold">
-                                    Temp. mÃ©dia (Ãºltima hora)
+                                    Temp. media (ultima hora)
                                 </p>
-                                <p class="text-3xl font-extrabold text-zinc-900 mt-2">68Â°C</p>
+                                <p class="text-3xl font-extrabold text-zinc-900 mt-2">68C</p>
                                 <p class="text-sm text-gray-600 mt-1">
-                                    Ambiente estÃ¡vel, sem variaÃ§Ãµes crÃ­ticas.
+                                    Ambiente estavel, sem variacoes criticas.
                                 </p>
                             </div>
                             <div class="cartao-principal bg-white p-4 rounded-xl">
                                 <p class="text-xs uppercase text-gray-500 font-semibold">
                                     Pico registrado
                                 </p>
-                                <p class="text-3xl font-extrabold text-amber-600 mt-2">92Â°C</p>
+                                <p class="text-3xl font-extrabold text-amber-600 mt-2">92C</p>
                                 <p class="text-sm text-gray-600 mt-1">
-                                    Ãšltimo pico hÃ¡ 18 min.
+                                    ltimo pico ha 18 min.
                                 </p>
                             </div>
                             <div class="cartao-principal bg-white p-4 rounded-xl">
@@ -311,24 +311,24 @@
                             <div class="lg:col-span-2 cartao-principal bg-white p-6 rounded-xl">
                                 <div class="flex items-center justify-between mb-4">
                                     <div class="flex items-center gap-2">
-                                        <span class="text-lg">ðŸŽ¯</span>
+                                        <span class="text-lg"></span>
                                         <h2 class="text-xl font-bold">Transmissao da Camera</h2>
                                     </div>
-                                    <span class="text-sm text-gray-500">Ãšltima atualizaÃ§Ã£o: agora</span>
+                                    <span class="text-sm text-gray-500">ltima atualizacao: agora</span>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
-                                        <p class="text-sm font-semibold text-gray-700">Setor crÃ­tico</p>
+                                        <p class="text-sm font-semibold text-gray-700">Setor critico</p>
                                         <p class="text-xl font-bold text-red-600 mt-2">Linha 2</p>
                                         <p class="text-sm text-gray-600">
-                                            Temperatura 15% acima da mÃ©dia.
+                                            Temperatura 15% acima da media.
                                         </p>
                                     </div>
                                     <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
-                                        <p class="text-sm font-semibold text-gray-700">TendÃªncia</p>
+                                        <p class="text-sm font-semibold text-gray-700">Tendencia</p>
                                         <p class="text-xl font-bold text-amber-600 mt-2">Aquecendo</p>
                                         <p class="text-sm text-gray-600">
-                                            Monitore durante o prÃ³ximo ciclo.
+                                            Monitore durante o proximo ciclo.
                                         </p>
                                     </div>
                                 </div>
@@ -336,20 +336,20 @@
 
                             <div class="cartao-principal bg-white p-6 rounded-xl">
                                 <div class="flex items-center gap-2 mb-4">
-                                    <span class="text-lg">ðŸ“·</span>
-                                    <h3 class="text-xl font-bold">CÃ¢meras cadastradas</h3>
+                                    <span class="text-lg"></span>
+                                    <h3 class="text-xl font-bold">Cameras cadastradas</h3>
                                 </div>
                                 <ul class="space-y-3 text-sm text-gray-700">
                                     <li class="flex justify-between">
-                                        <span>CÃ¢mera Demo</span>
+                                        <span>Camera Demo</span>
                                         <span class="text-green-600 font-semibold">Ativa</span>
                                     </li>
                                     <li class="flex justify-between">
-                                        <span>CÃ¢mera 01 (Linha 1)</span>
+                                        <span>Camera 01 (Linha 1)</span>
                                         <span class="text-yellow-600 font-semibold">Standby</span>
                                     </li>
                                     <li class="flex justify-between">
-                                        <span>CÃ¢mera 02 (Linha 2)</span>
+                                        <span>Camera 02 (Linha 2)</span>
                                         <span class="text-red-600 font-semibold">Alerta</span>
                                     </li>
                                 </ul>
@@ -360,7 +360,7 @@
                         </div>
                     </section>
 
-                    <!-- SeÃ§Ã£o Streaming -->
+                    <!-- Secao Streaming -->
 <section id="sec-streaming" class="space-y-8">
     <div id="streaming-list" class="space-y-6">
         <div class="cartao-principal bg-white p-6 rounded-xl viewer-card">
@@ -386,17 +386,17 @@
                     <div class="mb-4">
                         <div class="flex items-center justify-between gap-3 mb-3">
                             <div class="flex-1">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Selecionar CÃ¢mera:</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Selecionar Camera:</label>
                                 <div class="flex space-x-2">
                                     <select class="camera-select flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                        <option value="">Carregando cÃ¢meras...</option>
+                                        <option value="">Carregando cameras...</option>
                                     </select>
-                                    <button class="btn-acao px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 refresh-cameras">ðŸ”„</button>
+                                    <button class="btn-acao px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 refresh-cameras"></button>
                                 </div>
                             </div>
                             <div class="flex flex-col sm:flex-row gap-2 items-start sm:items-center pt-6">
                                 <button class="btn-acao px-3 py-2 bg-gray-200 text-zinc-900 font-bold hover:bg-gray-300 w-full sm:w-auto fullscreen-btn">Tela cheia</button>
-                                <button class="btn-acao px-4 py-2 text-zinc-900 font-extrabold hover:bg-amber-600 w-full sm:w-auto bg-amber-500 connect-button">Conectar CÃ¢mera</button>
+                                <button class="btn-acao px-4 py-2 text-zinc-900 font-extrabold hover:bg-amber-600 w-full sm:w-auto bg-amber-500 connect-button">Conectar Camera</button>
                             </div>
                         </div>
                     </div>
@@ -408,8 +408,8 @@
                                 <path d="M4.5 4.5l3 3m12 0l-3-3m-9 3l3 3m-3-3l-3 3"></path>
                                 <path fill-rule="evenodd" d="M11.25 5.688A11.954 11.954 0 0 1 12 4.5c1.111 0 2.19.18 3.23.538l-1.385 1.385A9.704 9.704 0 0 0 12 6.75c-.968 0-1.905.11-2.798.318L8.685 5.488ZM20.25 12c0-.518-.046-1.026-.135-1.524a41.288 41.288 0 0 0-.903-2.185l-1.42 1.42a8.25 8.25 0 0 1-.169 1.549h2.518ZM1.75 12c0 .518.046 1.026.135 1.524a41.288 41.288 0 0 0 .903 2.185l1.42-1.42a8.25 8.25 0 0 1 .169 1.549H1.885ZM12 2.25c5.385 0 9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12 6.615 2.25 12 2.25Z" clip-rule="evenodd"></path>
                             </svg>
-                            <p class="text-lg font-light text-gray-500 mt-2">Nenhuma CÃ¢mera conectada</p>
-                            <p class="text-base font-light text-gray-500">Selecione uma cÃ¢mera e clique em conectar</p>
+                            <p class="text-lg font-light text-gray-500 mt-2">Nenhuma Camera conectada</p>
+                            <p class="text-base font-light text-gray-500">Selecione uma camera e clique em conectar</p>
                         </div>
                     </div>
                 </div>
@@ -418,29 +418,29 @@
                     <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
                         <h3 class="text-lg font-bold mb-3">Status</h3>
                         <div class="flex justify-between items-center py-3 border-t-2 border-gray-200">
-                            <span class="font-semibold text-zinc-700">CÃ¢mera</span>
+                            <span class="font-semibold text-zinc-700">Camera</span>
                             <div class="viewer-status px-4 py-1 rounded-full text-sm font-bold border bg-red-200 text-red-700 border-red-700">Desconectada</div>
                         </div>
                         <div class="flex justify-between items-center py-3 border-t-2 border-gray-200">
-                            <span class="font-semibold text-zinc-700">CÃ¢mera Selecionada</span>
+                            <span class="font-semibold text-zinc-700">Camera Selecionada</span>
                             <span class="viewer-selected text-sm text-gray-600">Nenhuma</span>
                         </div>
                     </div>
 
                         <div class="p-4 rounded-lg border border-gray-200 bg-gray-50 space-y-3">
-                            <h3 class="text-lg font-bold">AÃ§Ãµes</h3>
+                            <h3 class="text-lg font-bold">Acoes</h3>
                             <button class="btn-acao w-full py-3 bg-gray-200 text-zinc-900 font-bold hover:bg-gray-300">
                                 Registrar imagem
                             </button>
                             <button class="btn-acao w-full py-3 bg-gray-200 text-zinc-900 font-bold hover:bg-gray-300">
-                                Iniciar a captura (AnÃ¡lise contÃ­nua)
+                                Iniciar a captura (Analise continua)
                             </button>
                             <button class="btn-acao w-full py-3 bg-gray-200 text-zinc-900 font-bold hover:bg-gray-300">
-                                Ver HistÃ³rico
+                                Ver Historico
                             </button>
                             <div class="pt-2 border-t border-gray-200">
                                 <button class="btn-acao w-full py-2 text-sm bg-white text-zinc-900 font-semibold hover:bg-gray-100 avancado-toggle">
-                                    FunÃ§Ãµes avanÃ§adas
+                                    Funcoes avancadas
                                 </button>
                                 <div class="mt-2 p-3 border border-dashed border-gray-300 rounded-lg bg-gray-50 hidden bloco-avancado space-y-2">
                                     <div class="flex items-center gap-2">
@@ -452,8 +452,8 @@
                                     </select>
                                     <div class="space-y-2">
                                         <div>
-                                            <label class="text-xs font-semibold text-gray-700">Pasta de saÃ­da</label>
-                                            <input type="text" class="output-dir-input w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="imagens (padrÃ£o)">
+                                            <label class="text-xs font-semibold text-gray-700">Pasta de saida</label>
+                                            <input type="text" class="output-dir-input w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="imagens (padrao)">
                                         </div>
                                         <div class="text-xs text-gray-600">Campos variam conforme o script escolhido.</div>
                                         <div class="script-dynamic-fields space-y-2"></div>
@@ -472,23 +472,23 @@
                 </div>
             </div>
     </div>
-    <button id="add-viewer" class="btn-acao w-full py-3 text-sm font-semibold bg-gray-200 text-zinc-900 hover:bg-gray-300">Adicionar outra visualizaÃ§Ã£o</button>
+    <button id="add-viewer" class="btn-acao w-full py-3 text-sm font-semibold bg-gray-200 text-zinc-900 hover:bg-gray-300">Adicionar outra visualizacao</button>
 </section>
-<!-- SeÃ§Ã£o Adicionar CÃ¢mera -->
+<!-- Secao Adicionar Camera -->
                     <section id="sec-add" class="space-y-8 hidden">
                         <div class="cartao-principal bg-white p-6 rounded-xl">
                             <div class="flex items-center justify-between mb-4">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-lg">âž•</span>
+                                    <span class="text-lg"></span>
                                     <h2 class="text-xl font-bold">Transmissao da Camera</h2>
                                 </div>
-                                <p class="text-xs text-gray-500">Configure URLs personalizadas de cÃ¢mera</p>
+                                <p class="text-xs text-gray-500">Configure URLs personalizadas de camera</p>
                             </div>
 
                             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 <div class="lg:col-span-2 space-y-4">
                                     <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
-                                        <h3 class="text-lg font-semibold mb-3">Adicionar cÃ¢mera</h3>
+                                        <h3 class="text-lg font-semibold mb-3">Adicionar camera</h3>
                                         <div class="space-y-3">
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1">Modelo</label>
@@ -509,7 +509,7 @@
                                                 <p class="text-sm font-semibold text-gray-700">Modelo Intelbras</p>
                                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                     <div>
-                                                        <label class="block text-xs font-medium text-gray-600 mb-1">UsuÃ¡rio</label>
+                                                        <label class="block text-xs font-medium text-gray-600 mb-1">Usuario</label>
                                                         <input id="intelbras-user" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="admin" />
                                                     </div>
                                                     <div>
@@ -535,27 +535,27 @@
                                             </div>
                                             <div class="flex gap-3">
                                                 <button id="beta-salvar" class="btn-acao px-4 py-2 bg-blue-500 text-white hover:bg-blue-600">Salvar</button>
-                                                <button id="beta-testar" class="btn-acao px-4 py-2 bg-gray-200 text-zinc-900 hover:bg-gray-300">Testar conexÃ£o</button>
+                                                <button id="beta-testar" class="btn-acao px-4 py-2 bg-gray-200 text-zinc-900 hover:bg-gray-300">Testar conexao</button>
                                             </div>
                                             <p class="text-xs text-gray-500">
-                                                As URLs ficam salvas apenas no seu navegador. NÃ£o envie credenciais sensÃ­veis para o servidor.
+                                                As URLs ficam salvas apenas no seu navegador. Nao envie credenciais sensiveis para o servidor.
                                             </p>
                                         </div>
                                     </div>
 
                                     <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
                                         <h3 class="text-lg font-semibold mb-3">Feedback</h3>
-                                        <div id="beta-feedback" class="text-sm text-gray-700">Aguardando aÃ§Ã£o...</div>
+                                        <div id="beta-feedback" class="text-sm text-gray-700">Aguardando acao...</div>
                                     </div>
                                 </div>
 
                                 <div class="space-y-3">
                                     <div class="flex items-center gap-2">
-                                        <span class="text-lg">ðŸ“‹</span>
-                                        <h3 class="text-lg font-semibold">CÃ¢meras salvas</h3>
+                                        <span class="text-lg"></span>
+                                        <h3 class="text-lg font-semibold">Cameras salvas</h3>
                                     </div>
                                     <div id="beta-lista" class="space-y-2 text-sm text-gray-700">
-                                        <p class="text-gray-500">Nenhuma cÃ¢mera cadastrada ainda.</p>
+                                        <p class="text-gray-500">Nenhuma camera cadastrada ainda.</p>
                                     </div>
                                 </div>
                             </div>
@@ -564,16 +564,16 @@
                         <div class="cartao-principal bg-white p-6 rounded-xl">
                             <div class="flex items-center justify-between mb-4">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-lg">ðŸ’»</span>
-                                    <h3 class="text-xl font-bold">CÃ¢meras locais detectadas</h3>
+                                    <span class="text-lg"></span>
+                                    <h3 class="text-xl font-bold">Cameras locais detectadas</h3>
                                 </div>
                                 <button id="add-local-refresh" class="btn-acao px-3 py-2 bg-gray-200 text-zinc-900 hover:bg-gray-300">Atualizar lista</button>
                             </div>
                             <div id="add-local-lista" class="space-y-2 text-sm text-gray-700">
-                                <p class="text-gray-500">Nenhuma cÃ¢mera detectada ou nÃ£o carregada ainda.</p>
+                                <p class="text-gray-500">Nenhuma camera detectada ou nao carregada ainda.</p>
                             </div>
                             <p class="text-xs text-amber-600 mt-3">
-                                Em WSL, webcams/USB nÃ£o aparecem por padrÃ£o. Para usar webcam real, rode no Windows nativo ou exponha via usbipd e teste com frontend/test_camera.py.
+                                Em WSL, webcams/USB nao aparecem por padrao. Para usar webcam real, rode no Windows nativo ou exponha via usbipd e teste com frontend/test_camera.py.
                             </p>
                         </div>
                     </section>
