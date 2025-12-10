@@ -34,6 +34,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const historicoGrid = document.getElementById("historico-grid");
     const historicoDirLabel = document.getElementById("historico-dir-label");
     const historicoTotal = document.getElementById("historico-total");
+    const lightbox = document.getElementById("historico-lightbox");
+    const lightboxImg = document.getElementById("historico-lightbox-img");
+    const lightboxCaption = document.getElementById("historico-lightbox-caption");
+    const lightboxClose = document.getElementById("historico-lightbox-close");
     let historicoDados = [];
     let historicoSelecionado = null;
     let secaoAtual = "dashboard";
@@ -274,8 +278,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // ----------------------------
     // HistÓrico de imagens (galeria)
     // ----------------------------
+    function fecharLightbox() {
+        if (lightbox) lightbox.classList.add("hidden");
+        if (lightboxImg) lightboxImg.src = "";
+        if (lightboxCaption) lightboxCaption.textContent = "";
+    }
+
+    function abrirLightbox(src, caption) {
+        if (!lightbox || !lightboxImg) return;
+        lightboxImg.src = src;
+        if (lightboxCaption) lightboxCaption.textContent = caption || "";
+        lightbox.classList.remove("hidden");
+    }
+
     function fecharHistorico() {
         if (historicoModal) historicoModal.classList.add("hidden");
+        fecharLightbox();
     }
 
     function selecionarPastaHistorico(nome) {
@@ -300,6 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
             img.src = `/historico/file?path=${encodeURIComponent(file.rel_path)}`;
             img.alt = file.name;
             img.className = "w-full h-28 object-cover bg-gray-100";
+            img.addEventListener("click", () => abrirLightbox(img.src, file.rel_path));
             const info = document.createElement("div");
             info.className = "p-2";
             info.innerHTML = `<p class="text-xs font-semibold text-gray-800 truncate" title="${file.name}">${file.name}</p><p class="text-[11px] text-gray-500 truncate" title="${file.rel_path}">${file.rel_path}</p>`;
@@ -360,6 +379,23 @@ document.addEventListener('DOMContentLoaded', function() {
             if (ev.target === historicoModal) fecharHistorico();
         });
     }
+    if (lightboxClose) {
+        lightboxClose.addEventListener("click", fecharLightbox);
+    }
+    if (lightbox) {
+        lightbox.addEventListener("click", (ev) => {
+            if (ev.target === lightbox) fecharLightbox();
+        });
+    }
+    window.addEventListener("keydown", (ev) => {
+        if (ev.key === "Escape") {
+            if (lightbox && !lightbox.classList.contains("hidden")) {
+                fecharLightbox();
+            } else if (historicoModal && !historicoModal.classList.contains("hidden")) {
+                fecharHistorico();
+            }
+        }
+    });
 
     function montarParamsScript(viewer, script) {
         const params = obterParamsCamera(viewer);
