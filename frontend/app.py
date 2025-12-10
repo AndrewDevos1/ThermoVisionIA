@@ -396,6 +396,8 @@ def executar_script():
             "output_dir",
             "intervalo",
             "duracao",
+            "coords",
+            "crop_dir",
         },
         # definicao de ROI
         "DatasetCut.py": {

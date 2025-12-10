@@ -348,6 +348,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 break;
             }
+            case "DatasetCreate.py": {
+                const coordsEl = card.querySelector(".ds-create-coords");
+                const cropDirEl = card.querySelector(".ds-create-crop-dir");
+                if (coordsEl && coordsEl.value.trim()) params.coords = coordsEl.value.trim();
+                if (cropDirEl && cropDirEl.value.trim()) params.crop_dir = cropDirEl.value.trim();
+                break;
+            }
             default:
                 break;
         }
@@ -551,6 +558,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div>
                         <label class="text-xs font-semibold text-gray-700">Pastas de filtros (separar por virgula)</label>
                         <input type="text" class="cut-input-dirs ${baseClass}" placeholder="imgAdpGray2, imgCanny, imgCannyInvertido">
+                    </div>
+                `;
+                break;
+            case "DatasetCreate.py":
+                html = `
+                    <div class="text-xs text-gray-600">Campos para DatasetCreate (captura + recortes opcionais)</div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Arquivo de coordenadas (recortes.pkl)</label>
+                        <input type="text" class="ds-create-coords ${baseClass}" placeholder="recortes.pkl">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-700">Pasta de recortes (opcional)</label>
+                        <input type="text" class="ds-create-crop-dir ${baseClass}" placeholder="cortes">
                     </div>
                 `;
                 break;
