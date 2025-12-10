@@ -13,7 +13,7 @@
   venv\Scripts\activate  # Windows/WSL
   pip install -r frontend/requirement.txt
   ```
-- Rodar UI (demo por padrao): `cd frontend && python app.py`.
+- Rodar UI (demo por padrao): `cd frontend && python app.py`. Em Windows, pode usar `run_frontend.bat` na raiz para criar/ativar o venv e iniciar direto.
 - Camera real: ajustar `MODE="real"` e `DEFAULT_CAMERA_INDEX` em `frontend/config.py`.
 - Checar cameras: `cd frontend && python test_camera.py`; recriar video demo: `python create_demo_video.py`.
 - Scripts de backend: `cd backend && python DatasetCreate.py` (trocar pelo desejado).
