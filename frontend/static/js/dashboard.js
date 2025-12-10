@@ -241,6 +241,15 @@ document.addEventListener('DOMContentLoaded', function() {
         return params;
     }
 
+    function montarParamsScript(viewer) {
+        const params = obterParamsCamera(viewer);
+        if (viewer && viewer.outputDirInput) {
+            const val = viewer.outputDirInput.value.trim();
+            if (val) params.output_dir = val;
+        }
+        return params;
+    }
+
     function iniciarPollingLog(viewer, scriptId) {
         if (!viewer) return;
         if (viewer.logInterval) {
@@ -399,8 +408,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const logBox = cardEl.querySelector(".log-box");
         const downloadLogBtn = cardEl.querySelector(".download-log");
         const pararScriptBtn = cardEl.querySelector(".parar-script");
+        const outputDirInput = cardEl.querySelector(".output-dir-input");
 
-        const viewer = { cardEl, select, refreshBtn, connectBtn, streamImg, disconnectedMsg, videoContainer, fullscreenBtn, statusBadge, selectedLabel, blocoAvancado, avancadoToggle, scriptSelect, refreshScriptsBtn, executarScriptBtn, feedbackScript, logBox, downloadLogBtn, pararScriptBtn, logInterval: null, currentScriptId: null };
+        const viewer = { cardEl, select, refreshBtn, connectBtn, streamImg, disconnectedMsg, videoContainer, fullscreenBtn, statusBadge, selectedLabel, blocoAvancado, avancadoToggle, scriptSelect, refreshScriptsBtn, executarScriptBtn, feedbackScript, logBox, downloadLogBtn, pararScriptBtn, outputDirInput, logInterval: null, currentScriptId: null };
 
         if (refreshBtn) {
             refreshBtn.addEventListener("click", () => {
@@ -462,7 +472,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 if (feedbackScript) feedbackScript.textContent = "Executando...";
                 if (logBox) logBox.textContent = "Iniciando...";
-                const paramsCam = obterParamsCamera(viewer);
+                const paramsCam = montarParamsScript(viewer);
                 try {
                     const resp = await fetch("/scripts/run", {
                         method: "POST",

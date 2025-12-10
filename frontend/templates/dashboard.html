@@ -450,7 +450,13 @@
                                     <select class="script-select w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                         <option value="">Selecione um script...</option>
                                     </select>
-                                    <div class="flex gap-2">
+                                    <div class="space-y-2">
+                                        <div>
+                                            <label class="text-xs font-semibold text-gray-700">Pasta de saída</label>
+                                            <input type="text" class="output-dir-input w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="imagens (padrão)">
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2 pt-1">
                                         <button class="btn-acao flex-1 py-2 bg-blue-500 text-white text-sm font-semibold hover:bg-blue-600 executar-script">Executar script</button>
                                         <button class="btn-acao px-3 py-2 bg-amber-500 text-xs text-zinc-900 font-semibold hover:bg-amber-600 parar-script" disabled>Parar</button>
                                         <button class="btn-acao px-3 py-2 bg-gray-200 text-xs text-zinc-900 font-semibold hover:bg-gray-300 download-log" disabled>Baixar log</button>
