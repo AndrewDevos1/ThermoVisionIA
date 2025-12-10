@@ -566,7 +566,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="text-xs text-gray-600">Campos para DatasetCreate (captura + recortes opcionais)</div>
                     <div>
                         <label class="text-xs font-semibold text-gray-700">Arquivo de coordenadas (recortes.pkl)</label>
-                        <input type="text" class="ds-create-coords ${baseClass}" placeholder="recortes.pkl">
+                        <input type="text" class="ds-create-coords ${baseClass}" placeholder="recortes.pkl" value="recortes.pkl">
                     </div>
                     <div>
                         <label class="text-xs font-semibold text-gray-700">Pasta de recortes (opcional)</label>
