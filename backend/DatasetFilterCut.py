@@ -1,66 +1,120 @@
+import argparse
 import os
-import cv2
 import pickle
 import time
+from typing import List, Tuple
+
+import cv2
 from tqdm import tqdm
-import msvcrt  # Para detectar tecla pressionada no Windows
 
-# Função para salvar recorte sem sobrescrever arquivos
+
+def ensure_dir(path: str) -> None:
+    os.makedirs(path, exist_ok=True)
+
+
+def carrega_coordenadas(path: str) -> List[Tuple[int, int, int, int]]:
+    if not os.path.isfile(path):
+        raise SystemExit(f"Arquivo de coordenadas nao encontrado: {path}")
+    with open(path, "rb") as fp:
+        coords = pickle.load(fp)
+    return coords
+
+
+def lista_imagens(pasta: str) -> List[str]:
+    if not os.path.isdir(pasta):
+        return []
+    return [
+        os.path.join(pasta, f)
+        for f in os.listdir(pasta)
+        if f.lower().endswith((".jpg", ".jpeg", ".png"))
+    ]
+
+
 def salva_recorte(img, pasta, nome_base, pbar=None):
-    os.makedirs(pasta, exist_ok=True)
-    arquivos = [f for f in os.listdir(pasta) if f.startswith(nome_base) and f.endswith('.jpg')]
-    if arquivos:
-        numeros = [int(f.split('_')[-1].split('.')[0]) for f in arquivos if f.split('_')[-1].split('.')[0].isdigit()]
-        proximo_num = max(numeros) + 1 if numeros else 1
+    ensure_dir(pasta)
+    existentes = [
+        f for f in os.listdir(pasta) if f.startswith(nome_base) and f.lower().endswith(".jpg")
+    ]
+    if existentes:
+        numeros = [
+            int(f.split("_")[-1].split(".")[0])
+            for f in existentes
+            if f.split("_")[-1].split(".")[0].isdigit()
+        ]
+        proximo = max(numeros) + 1 if numeros else 1
     else:
-        proximo_num = 1
-    nome_arquivo = f"{pasta}/{nome_base}_{proximo_num:03d}.jpg"
-    cv2.imwrite(nome_arquivo, img)
+        proximo = 1
+    nome = os.path.join(pasta, f"{nome_base}_{proximo:03d}.jpg")
+    cv2.imwrite(nome, img)
     if pbar:
-        pbar.write(f"Recorte salvo: {nome_arquivo}")
+        pbar.write(f"[recorte] {nome}")
 
-# Carrega as coordenadas dos recortes
-with open('recortes.pkl', 'rb') as f:
-    coordenadas = pickle.load(f)  # Lista de tuplas (x, y, w, h)
 
-# Pastas dos filtros gerados pelo DatasetFilterApliqued.py
-pastas_filtros = ["imgAdpGray2", "imgCanny", "imgCannyInvertido"]
-
-# Para cada filtro, processa todas as imagens da pasta
-for pasta_filtro in pastas_filtros:
-    if not os.path.exists(pasta_filtro):
-        print(f"Pasta '{pasta_filtro}' não encontrada. Pulando...\n")
-        continue
-    arquivos = [os.path.join(pasta_filtro, f) for f in os.listdir(pasta_filtro) if f.lower().endswith('.jpg')]
-    print(f"\nProcessando recortes para filtro: {pasta_filtro}")
-    print("Pressione ESPAÇO a qualquer momento para interromper o processamento.\n")
+def processa_pasta(
+    pasta_filtro: str,
+    coords: List[Tuple[int, int, int, int]],
+    output_dir: str,
+    pbar_global=None,
+):
+    arquivos = lista_imagens(pasta_filtro)
+    if not arquivos:
+        print(f"[aviso] Pasta '{pasta_filtro}' vazia ou inexistente; pulando.")
+        return
     start_time = time.time()
-    try:
-        with tqdm(total=len(arquivos), desc=f"Recortando {pasta_filtro}", unit="img", ncols=80) as pbar:
-            for nome_arquivo in arquivos:
-                img = cv2.imread(nome_arquivo)
-                if img is None:
-                    pbar.write(f"Não foi possível abrir {nome_arquivo}")
-                    pbar.update(1)
-                    continue
-                # Para cada coordenada, faz o recorte e salva na subpasta do filtro dentro da pasta da coordenada
-                for idx, (x, y, w, h) in enumerate(coordenadas):
-                    if w > 0 and h > 0:
-                        recorte = img[int(y):int(y+h), int(x):int(x+w)]
-                        pasta_saida = os.path.join(f"coordenada{idx+1}", pasta_filtro)
-                        nome_base = f"coordenada{idx+1}_{pasta_filtro}"
-                        salva_recorte(recorte, pasta_saida, nome_base, pbar)
+    with tqdm(total=len(arquivos), desc=f"Recortando {pasta_filtro}", unit="img", ncols=80) as pbar:
+        for nome_arquivo in arquivos:
+            img = cv2.imread(nome_arquivo)
+            if img is None:
+                pbar.write(f"[erro] Nao foi possivel abrir {nome_arquivo}")
                 pbar.update(1)
-                # Permite interromper com barra de espaço
-                if msvcrt.kbhit():
-                    if msvcrt.getch() == b' ':
-                        pbar.write("\nProcessamento interrompido pelo usuário.")
-                        raise KeyboardInterrupt
-    except KeyboardInterrupt:
-        print("\nProcessamento interrompido pelo usuário.")
-
+                continue
+            for idx, (x, y, w, h) in enumerate(coords, start=1):
+                if w <= 0 or h <= 0:
+                    continue
+                recorte = img[int(y): int(y + h), int(x): int(x + w)]
+                pasta_saida = os.path.join(output_dir, f"coordenada{idx}", pasta_filtro)
+                nome_base = f"coordenada{idx}_{pasta_filtro}"
+                salva_recorte(recorte, pasta_saida, nome_base, pbar)
+            pbar.update(1)
     elapsed = time.time() - start_time
     minutos, segundos = divmod(int(elapsed), 60)
-    print(f"\nRecortes do filtro {pasta_filtro} concluídos em {minutos}m{segundos}s.")
+    print(f"[ok] {pasta_filtro}: {minutos}m{segundos}s")
+    if pbar_global:
+        pbar_global.update(1)
 
-print("\nTodos os recortes finalizados.")
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Aplica recortes salvos (recortes.pkl) nas pastas de filtros."
+    )
+    parser.add_argument(
+        "--coords",
+        default="recortes.pkl",
+        help="Arquivo pickle com coordenadas (padrao: recortes.pkl).",
+    )
+    parser.add_argument(
+        "--input-dirs",
+        nargs="*",
+        default=["imgAdpGray2", "imgCanny", "imgCannyInvertido"],
+        help="Pastas de entrada (filtros) com imagens a recortar.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        default=".",
+        help="Pasta base onde serao salvos os recortes (padrao: .).",
+    )
+
+    args = parser.parse_args()
+
+    coords = carrega_coordenadas(args.coords)
+    if not coords:
+        raise SystemExit("Nenhuma coordenada encontrada em recortes.")
+
+    total_pastas = len(args.input_dirs)
+    with tqdm(total=total_pastas, desc="Pastas de filtros", unit="pasta", ncols=80) as pbar_global:
+        for pasta in args.input_dirs:
+            processa_pasta(pasta, coords, args.output_dir, pbar_global)
+
+
+if __name__ == "__main__":
+    main()
