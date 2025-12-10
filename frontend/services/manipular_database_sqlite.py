@@ -50,6 +50,29 @@ def listar_usuarios(limit=20):
     return usuarios[:limit]
 
 
+def atualizar_usuario(usuario_id, novo_nome=None, nova_senha=None):
+    """Atualiza nome/senha do usuario pelo id."""
+    if not novo_nome and not nova_senha:
+        return False
+    conn = get_connection()
+    cursor_obj = conn.cursor()
+    campos = []
+    valores = []
+    if novo_nome:
+        campos.append("nome = ?")
+        valores.append(novo_nome)
+    if nova_senha:
+        campos.append("senha = ?")
+        valores.append(nova_senha)
+    valores.append(usuario_id)
+    sql = f"UPDATE usuarios SET {', '.join(campos)} WHERE id = ?"
+    cursor_obj.execute(sql, tuple(valores))
+    conn.commit()
+    cursor_obj.close()
+    conn.close()
+    return cursor_obj.rowcount > 0
+
+
 def verificar_login(usuario, senha_digitada):
     conn = get_connection()
     cursor_obj = conn.cursor()
