@@ -388,33 +388,54 @@ def executar_script():
     log_path = logs_dir / f"{script_id}.log"
 
     # Monta args permitidos
-    args_permitidos = {
-        # captura
-        "camera_url",
-        "camera_index",
-        "output_dir",
-        "intervalo",
-        "duracao",
-        # dataset cut
-        "input_image",
-        "roi",
-        "interactive",
-        "interactive_count",
-        "preview",
-        "save_crops",
-        "display_width",
-        # filtros
-        "input_dir",
-        "input",
-        "brilho",
-        "adaptive_block_size",
-        "adaptive_c",
-        "canny_low",
-        "canny_high",
-        # recortes por filtro
-        "coords",
-        "input_dirs",
+    args_permitidos_por_script = {
+        # captura base
+        "DatasetCreate.py": {
+            "camera_url",
+            "camera_index",
+            "output_dir",
+            "intervalo",
+            "duracao",
+        },
+        # definicao de ROI
+        "DatasetCut.py": {
+            "input_image",
+            "roi",
+            "interactive",
+            "interactive_count",
+            "preview",
+            "save_crops",
+            "output_dir",
+            "display_width",
+        },
+        # filtros unitarios
+        "DatasetFilter.py": {
+            "input_dir",
+            "input",
+            "brilho",
+            "adaptive_block_size",
+            "adaptive_c",
+            "canny_low",
+            "canny_high",
+            "output_dir",
+        },
+        # filtros em lote
+        "DatasetFilterApliqued.py": {
+            "input_dir",
+            "adaptive_block_size",
+            "adaptive_c",
+            "canny_low",
+            "canny_high",
+            "output_dir",
+        },
+        # recortes com coordenadas salvas
+        "DatasetFilterCut.py": {
+            "coords",
+            "input_dirs",
+            "output_dir",
+        },
     }
+    args_permitidos = args_permitidos_por_script.get(nome_script, set())
 
     cli_args = []
 
