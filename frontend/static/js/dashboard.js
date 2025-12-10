@@ -223,6 +223,40 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function iniciarPollingLog(viewer, scriptId) {
+        if (!viewer) return;
+        if (viewer.logInterval) {
+            clearInterval(viewer.logInterval);
+        }
+        viewer.currentScriptId = scriptId;
+        if (viewer.downloadLogBtn) {
+            viewer.downloadLogBtn.disabled = false;
+            viewer.downloadLogBtn.dataset.scriptId = scriptId;
+        }
+        const atualizar = async () => {
+            try {
+                const resp = await fetch(`/scripts/logs?script_id=${scriptId}`);
+                const result = await resp.json();
+                if (!result.success) return;
+                if (viewer.logBox) {
+                    viewer.logBox.textContent = result.log || "Sem logs.";
+                    viewer.logBox.scrollTop = viewer.logBox.scrollHeight;
+                }
+                if (result.finished) {
+                    clearInterval(viewer.logInterval);
+                    viewer.logInterval = null;
+                    if (viewer.feedbackScript) {
+                        viewer.feedbackScript.textContent = `Finalizado (código ${result.return_code})`;
+                    }
+                }
+            } catch (e) {
+                console.error("Erro ao buscar log:", e);
+            }
+        };
+        atualizar();
+        viewer.logInterval = setInterval(atualizar, 1500);
+    }
+
     // Scripts avançados
     async function loadScripts() {
         try {
@@ -337,8 +371,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const refreshScriptsBtn = cardEl.querySelector(".refresh-scripts");
         const executarScriptBtn = cardEl.querySelector(".executar-script");
         const feedbackScript = cardEl.querySelector(".feedback-script");
+        const logBox = cardEl.querySelector(".log-box");
+        const downloadLogBtn = cardEl.querySelector(".download-log");
 
-        const viewer = { cardEl, select, refreshBtn, connectBtn, streamImg, disconnectedMsg, videoContainer, fullscreenBtn, statusBadge, selectedLabel, blocoAvancado, avancadoToggle, scriptSelect, refreshScriptsBtn, executarScriptBtn, feedbackScript };
+        const viewer = { cardEl, select, refreshBtn, connectBtn, streamImg, disconnectedMsg, videoContainer, fullscreenBtn, statusBadge, selectedLabel, blocoAvancado, avancadoToggle, scriptSelect, refreshScriptsBtn, executarScriptBtn, feedbackScript, logBox, downloadLogBtn, logInterval: null, currentScriptId: null };
 
         if (refreshBtn) {
             refreshBtn.addEventListener("click", () => {
@@ -369,6 +405,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (viewerCards.length <= 1) {
                     alert("Mantenha pelo menos uma visualização ativa.");
                     return;
+                }
+                if (viewer.logInterval) {
+                    clearInterval(viewer.logInterval);
                 }
                 const idx = viewerCards.indexOf(viewer);
                 if (idx !== -1) viewerCards.splice(idx, 1);
@@ -405,6 +444,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     const result = await resp.json();
                     if (result.success) {
                         if (feedbackScript) feedbackScript.textContent = result.message || "Script iniciado.";
+                        if (result.script_id) {
+                            iniciarPollingLog(viewer, result.script_id);
+                        }
                     } else {
                         if (feedbackScript) feedbackScript.textContent = result.message || "Falha ao executar.";
                         alert(result.message || "Falha ao executar script.");
@@ -414,6 +456,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (feedbackScript) feedbackScript.textContent = "Erro ao executar.";
                     alert("Erro ao executar script.");
                 }
+            });
+        }
+
+        if (downloadLogBtn) {
+            downloadLogBtn.addEventListener("click", () => {
+                const sid = downloadLogBtn.dataset.scriptId;
+                if (!sid) return;
+                window.open(`/scripts/logs/download?script_id=${sid}`, "_blank");
             });
         }
 
@@ -546,6 +596,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const scriptSelect = clone.querySelector(".script-select");
             if (scriptSelect) {
                 scriptSelect.innerHTML = '<option value="">Selecione um script...</option>';
+            }
+            const logBox = clone.querySelector(".log-box");
+            if (logBox) logBox.textContent = "Sem logs ainda.";
+            const downloadBtn = clone.querySelector(".download-log");
+            if (downloadBtn) {
+                downloadBtn.disabled = true;
+                delete downloadBtn.dataset.scriptId;
             }
 
             streamingList.appendChild(clone);

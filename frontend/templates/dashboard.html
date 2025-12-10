@@ -450,8 +450,12 @@
                                     <select class="script-select w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                         <option value="">Selecione um script...</option>
                                     </select>
-                                    <button class="btn-acao w-full py-2 bg-blue-500 text-white text-sm font-semibold hover:bg-blue-600 executar-script">Executar script</button>
+                                    <div class="flex gap-2">
+                                        <button class="btn-acao flex-1 py-2 bg-blue-500 text-white text-sm font-semibold hover:bg-blue-600 executar-script">Executar script</button>
+                                        <button class="btn-acao px-3 py-2 bg-gray-200 text-xs text-zinc-900 font-semibold hover:bg-gray-300 download-log" disabled>Baixar log</button>
+                                    </div>
                                     <div class="text-xs text-gray-600 feedback-script">Selecione um script para executar.</div>
+                                    <div class="bg-white border border-gray-200 rounded-lg p-2 h-32 overflow-auto text-[11px] text-gray-700 font-mono log-box">Sem logs ainda.</div>
                                 </div>
                             </div>
                         </div>

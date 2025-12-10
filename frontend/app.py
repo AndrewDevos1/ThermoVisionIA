@@ -26,6 +26,9 @@ import config
 import os
 import subprocess
 import sys
+import threading
+import uuid
+from datetime import datetime
 from pathlib import Path
 
 app = Flask(__name__)
@@ -34,6 +37,7 @@ app.secret_key = "d2ccd1731dc1cca262d6c889e3352a921f973db9698cc4ba"
 # Variável global para a captura de vídeo do OpenCV
 camera = None
 selected_camera_index = 0
+processos = {}
 
 # Modo demo
 DEMO_MODE = config.MODE == "demo"
@@ -365,7 +369,7 @@ def listar_scripts():
 
 @app.route("/scripts/run", methods=["POST"])
 def executar_script():
-    """Executa um script Python do diretório backend."""
+    """Executa um script Python do diretório backend e registra logs."""
     data = request.get_json() or {}
     nome_script = data.get("script")
     if not nome_script:
@@ -377,23 +381,100 @@ def executar_script():
 
     raiz = Path(__file__).resolve().parent.parent / "backend"
     caminho = raiz / nome_script
+    logs_dir = raiz / "logs"
+    logs_dir.mkdir(parents=True, exist_ok=True)
+    script_id = uuid.uuid4().hex
+    log_path = logs_dir / f"{script_id}.log"
 
     try:
         proc = subprocess.Popen(
             [sys.executable, str(caminho)],
             cwd=str(raiz),
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1,
         )
+
+        def gravar_logs():
+            with log_path.open("w", encoding="utf-8") as log_file:
+                cabecalho = f"[{datetime.now().isoformat()}] Iniciando {nome_script} (pid={proc.pid})\n"
+                log_file.write(cabecalho)
+                if proc.stdout:
+                    for linha in proc.stdout:
+                        log_file.write(linha)
+                proc.wait()
+                log_file.write(f"\n[{datetime.now().isoformat()}] Finalizado com código {proc.returncode}\n")
+
+        t = threading.Thread(target=gravar_logs, daemon=True)
+        t.start()
+
+        processos[script_id] = {"proc": proc, "log": log_path, "script": nome_script}
+
         return jsonify(
             {
                 "success": True,
-                "message": f"Script {nome_script} iniciado (pid={proc.pid}).",
+                "message": f"Script {nome_script} iniciado.",
                 "pid": proc.pid,
+                "script_id": script_id,
             }
         )
     except Exception as e:
         return jsonify({"success": False, "message": f"Erro ao executar: {e}"}), 500
+
+
+@app.route("/scripts/logs", methods=["GET"])
+def obter_logs():
+    """Retorna o conteúdo atual do log de um script."""
+    script_id = request.args.get("script_id")
+    if not script_id:
+        return jsonify({"success": False, "message": "script_id é obrigatório"}), 400
+
+    raiz = Path(__file__).resolve().parent.parent / "backend" / "logs"
+    log_path = raiz / f"{script_id}.log"
+    if not log_path.exists():
+        return jsonify({"success": False, "message": "Log não encontrado"}), 404
+
+    try:
+        conteudo = log_path.read_text(encoding="utf-8")
+    except Exception as e:
+        return jsonify({"success": False, "message": f"Erro ao ler log: {e}"}), 500
+
+    proc_info = processos.get(script_id)
+    finished = True
+    return_code = None
+    if proc_info:
+        p = proc_info.get("proc")
+        if p:
+            rc = p.poll()
+            finished = rc is not None
+            return_code = rc
+
+    return jsonify(
+        {
+            "success": True,
+            "log": conteudo,
+            "finished": finished,
+            "return_code": return_code,
+        }
+    )
+
+
+@app.route("/scripts/logs/download", methods=["GET"])
+def baixar_log():
+    """Download do arquivo de log de um script."""
+    from flask import send_file
+
+    script_id = request.args.get("script_id")
+    if not script_id:
+        return jsonify({"success": False, "message": "script_id é obrigatório"}), 400
+
+    raiz = Path(__file__).resolve().parent.parent / "backend" / "logs"
+    log_path = raiz / f"{script_id}.log"
+    if not log_path.exists():
+        return jsonify({"success": False, "message": "Log não encontrado"}), 404
+
+    return send_file(log_path, mimetype="text/plain", as_attachment=True, download_name=f"{script_id}.log")
 
 
 # Rota principal: Tela de login
