@@ -37,7 +37,10 @@
 
                 <div class="item-formulario">
                     <label for="senha">Senha</label>
-                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+                    <div class="input-senha">
+                        <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+                        <button type="button" id="toggleSenha" class="btn-olho" aria-label="Mostrar ou ocultar senha">👁</button>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn">
@@ -65,10 +68,19 @@
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            const toggleSenha = document.getElementById("toggleSenha");
+            const inputSenha = document.getElementById("senha");
+            if (toggleSenha && inputSenha) {
+                toggleSenha.addEventListener("click", () => {
+                    const isPassword = inputSenha.type === "password";
+                    inputSenha.type = isPassword ? "text" : "password";
+                    toggleSenha.textContent = isPassword ? "🙈" : "👁";
+                });
+            }
+
             const lista = document.getElementById("lista-rapida");
             const status = document.getElementById("status-rapido");
             const inputUser = document.getElementById("usuario");
-            const inputSenha = document.getElementById("senha");
 
             function setStatus(msg, isError = false) {
                 if (!status) return;
