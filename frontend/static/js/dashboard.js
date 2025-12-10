@@ -384,7 +384,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     if (lightbox) {
         lightbox.addEventListener("click", (ev) => {
-            if (ev.target === lightbox) fecharLightbox();
+            const inner = lightbox.querySelector(".lightbox-container");
+            if (ev.target === lightbox || (inner && !inner.contains(ev.target))) {
+                fecharLightbox();
+            }
         });
     }
     window.addEventListener("keydown", (ev) => {
