@@ -178,15 +178,13 @@
                     </a>
                 </nav>
                 <div class="px-4 py-4 border-t border-white/10 text-white/70 text-sm">
-                    <p class="font-semibold text-white">Modo Demo</p>
-                    <p>Streaming usa vídeo local se configurado.</p>
-                    <div class="flex flex-col gap-2 mt-2">
+                    <div class="flex flex-col gap-2">
                         <form action="{{ url_for('logout') }}" method="POST">
-                            <button type="submit" class="btn-acao w-full py-2 text-sm bg-white text-zinc-900 font-semibold hover:bg-gray-100">
+                            <button type="submit" class="btn-acao w-full py-1 text-xs bg-white text-zinc-900 font-semibold hover:bg-gray-100">
                                 Sair
                             </button>
                         </form>
-                        <a href="{{ url_for('perfil') }}" class="btn-acao w-full py-2 text-sm bg-gray-200 text-zinc-900 font-semibold hover:bg-gray-300 text-center">
+                        <a href="{{ url_for('perfil') }}" class="btn-acao w-full py-1 text-xs bg-gray-200 text-zinc-900 font-semibold hover:bg-gray-300 text-center">
                             Editar perfil
                         </a>
                     </div>
