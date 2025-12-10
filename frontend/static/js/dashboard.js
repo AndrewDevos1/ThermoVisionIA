@@ -223,6 +223,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function obterParamsCamera(viewer) {
+        const params = {};
+        if (!viewer || !viewer.select) return params;
+        const val = viewer.select.value;
+        if (!val) return params;
+        if (val.toString().startsWith("custom-")) {
+            const opt = viewer.select.selectedOptions[0];
+            const rtsp = opt ? opt.dataset.rtsp : "";
+            if (rtsp) params.camera_url = rtsp;
+        } else {
+            const idx = parseInt(val, 10);
+            if (!Number.isNaN(idx)) {
+                params.camera_index = idx;
+            }
+        }
+        return params;
+    }
+
     function iniciarPollingLog(viewer, scriptId) {
         if (!viewer) return;
         if (viewer.logInterval) {
@@ -444,11 +462,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 if (feedbackScript) feedbackScript.textContent = "Executando...";
                 if (logBox) logBox.textContent = "Iniciando...";
+                const paramsCam = obterParamsCamera(viewer);
                 try {
                     const resp = await fetch("/scripts/run", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ script }),
+                        body: JSON.stringify({ script, params: paramsCam }),
                     });
                     const result = await resp.json();
                     if (result.success) {

@@ -372,6 +372,7 @@ def executar_script():
     """Executa um script Python do diretório backend e registra logs."""
     data = request.get_json() or {}
     nome_script = data.get("script")
+    params = data.get("params") or {}
     if not nome_script:
         return jsonify({"success": False, "message": "Informe o nome do script."}), 400
 
@@ -386,9 +387,26 @@ def executar_script():
     script_id = uuid.uuid4().hex
     log_path = logs_dir / f"{script_id}.log"
 
+    # Monta args permitidos
+    args_permitidos = {
+        "camera_url",
+        "camera_index",
+        "output_dir",
+        "intervalo",
+        "duracao",
+    }
+    cli_args = []
+    for chave, valor in params.items():
+        if chave not in args_permitidos:
+            continue
+        if valor is None or valor == "":
+            continue
+        cli_args.append(f"--{chave.replace('_', '-')}")
+        cli_args.append(str(valor))
+
     try:
         proc = subprocess.Popen(
-            [sys.executable, str(caminho)],
+            [sys.executable, str(caminho), *cli_args],
             cwd=str(raiz),
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
@@ -399,6 +417,8 @@ def executar_script():
         def gravar_logs():
             with log_path.open("w", encoding="utf-8") as log_file:
                 cabecalho = f"[{datetime.now().isoformat()}] Iniciando {nome_script} (pid={proc.pid})\n"
+                if params:
+                    cabecalho += f"Parâmetros: {params}\n"
                 log_file.write(cabecalho)
                 if proc.stdout:
                     for linha in proc.stdout:
